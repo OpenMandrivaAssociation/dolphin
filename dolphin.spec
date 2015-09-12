@@ -42,6 +42,12 @@ BuildRequires: cmake(KF5WindowSystem)
 BuildRequires: cmake(KF5Notifications)
 BuildRequires: cmake(Phonon4Qt5)
 
+BuildRequires:	cmake(KF5Activities)
+BuildRequires:	cmake(KF5Baloo)
+BuildRequires:	cmake(KF5BalooWidgets)
+BuildRequires:	cmake(KF5FileMetaData)
+BuildRequires:	cmake(KF5KDELibs4Support)
+
 BuildRequires:	libxml2-utils
 BuildRequires:	docbook-dtds
 BuildRequires:	docbook-style-xsl
