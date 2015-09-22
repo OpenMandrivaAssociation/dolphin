@@ -6,9 +6,9 @@
 
 Summary:        File manager for KDE focusing on usability
 Name:           dolphin
-Version: 15.08.0
+Version:	15.08.1
 Epoch:          1
-Release:        1
+Release:	1
 License:        GPLv2+
 Group:          System/Base
 Source0:        http://fr2.rpmfind.net/linux/KDE/stable/plasma/%{name}-%{version}.tar.xz

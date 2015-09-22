@@ -1,2 +1,4 @@
-sources:
+removed_sources:
   dolphin-15.08.0.tar.xz: 9bf5294a6124f42c37d6fba7752dbeb7121ebe4b
+sources:
+  dolphin-15.08.1.tar.xz: a5c70021eceb0d77116a635ca063ae22dc516ffd
