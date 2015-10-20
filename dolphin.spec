@@ -1,46 +1,40 @@
-
-# Please do not update/rebuild/touch this package before asking first to mikala and/or neoclust
-# This package is part of the KDE Stack.
-#
-#define debug_package %{nil}
-
-Summary:        File manager for KDE focusing on usability
-Name:           dolphin
+Summary:	File manager for KDE focusing on usability
+Name:		dolphin
 Version:	15.08.2
-Epoch:          1
+Epoch:		1
 Release:	1
-License:        GPLv2+
-Group:          System/Base
-Source0:        http://fr2.rpmfind.net/linux/KDE/stable/plasma/%{name}-%{version}.tar.xz
-URL:            https://www.kde.org/
+License:	GPLv2+
+Group:		Graphical desktop/KDE
+Source0:	http://download.kde.org/stable/applications/%{version}/src/%{name}-%{version}.tar.xz
+URL:		https://www.kde.org/
+# (tpg) Patch from Rosa https://abf.rosalinux.ru/import/plasma5-dolphin/commit/8d7cd84c80ed66937f5cedcba38fd66484e68b93
+Patch0:		dolphin-15.08.1-klook.patch
+BuildRequires:	pkgconfig(Qt5Core)
+BuildRequires:	pkgconfig(Qt5Concurrent)
+BuildRequires:	pkgconfig(Qt5Widgets)
+BuildRequires:	pkgconfig(Qt5Gui)
+BuildRequires:	pkgconfig(Qt5DBus)
+BuildRequires:	pkgconfig(Qt5Test)
 
-BuildRequires:  pkgconfig(Qt5Core)
-BuildRequires:  pkgconfig(Qt5Concurrent)
-BuildRequires:  pkgconfig(Qt5Widgets)
-BuildRequires:  pkgconfig(Qt5Gui)
-BuildRequires:  pkgconfig(Qt5DBus)
-BuildRequires:  pkgconfig(Qt5Test)
-
-BuildRequires:  cmake(ECM)
-
-BuildRequires: cmake(KF5DocTools)
-BuildRequires: cmake(KF5Init)
-BuildRequires: cmake(KF5KCMUtils)
-BuildRequires: cmake(KF5NewStuff)
-BuildRequires: cmake(KF5CoreAddons)
-BuildRequires: cmake(KF5I18n)
-BuildRequires: cmake(KF5DBusAddons)
-BuildRequires: cmake(KF5Bookmarks)
-BuildRequires: cmake(KF5Config)
-BuildRequires: cmake(KF5KIO)
-BuildRequires: cmake(KF5Solid)
-BuildRequires: cmake(KF5IconThemes)
-BuildRequires: cmake(KF5Completion)
-BuildRequires: cmake(KF5Parts)
-BuildRequires: cmake(KF5TextEditor)
-BuildRequires: cmake(KF5WindowSystem)
-BuildRequires: cmake(KF5Notifications)
-BuildRequires: cmake(Phonon4Qt5)
+BuildRequires:	cmake(ECM)
+BuildRequires:	cmake(KF5DocTools)
+BuildRequires:	cmake(KF5Init)
+BuildRequires:	cmake(KF5KCMUtils)
+BuildRequires:	cmake(KF5NewStuff)
+BuildRequires:	cmake(KF5CoreAddons)
+BuildRequires:	cmake(KF5I18n)
+BuildRequires:	cmake(KF5DBusAddons)
+BuildRequires:	cmake(KF5Bookmarks)
+BuildRequires:	cmake(KF5Config)
+BuildRequires:	cmake(KF5KIO)
+BuildRequires:	cmake(KF5Solid)
+BuildRequires:	cmake(KF5IconThemes)
+BuildRequires:	cmake(KF5Completion)
+BuildRequires:	cmake(KF5Parts)
+BuildRequires:	cmake(KF5TextEditor)
+BuildRequires:	cmake(KF5WindowSystem)
+BuildRequires:	cmake(KF5Notifications)
+BuildRequires:	cmake(Phonon4Qt5)
 
 BuildRequires:	cmake(KF5Activities)
 BuildRequires:	cmake(KF5Baloo)
@@ -69,7 +63,7 @@ directories and a lot more, whereas Dolphin focuses on being only a file
 manager. This approach allows to optimize the user interface for the task
 of file management.
 
-%files 
+%files
 %_kde5_bindir/dolphin
 %_kde5_bindir/servicemenudeinstallation
 %_kde5_bindir/servicemenuinstallation
@@ -89,8 +83,8 @@ of file management.
 #--------------------------------------------------------------------
 
 %package handbook
-Summary: %{name} Handbook
-BuildArch: noarch
+Summary:	%{name} Handbook
+BuildArch:	noarch
 
 %description handbook
 This package provides %{name} Handbook.
@@ -103,14 +97,14 @@ This package provides %{name} Handbook.
 %define dolphinprivate_major 15
 %define libdolphinprivate %mklibname dolphinprivate %{dolphinprivate_major}
 
-%package -n %libdolphinprivate
-Summary:      Widgets for Baloo
-Group:        System/Libraries
+%package -n %{libdolphinprivate}
+Summary:	Dolphin library
+Group:		System/Libraries
 
-%description -n %libdolphinprivate
-Dolphin Library
+%description -n %{libdolphinprivate}
+Dolphin Library.
 
-%files -n %libdolphinprivate
+%files -n %{libdolphinprivate}
 %_kde5_libdir/libdolphinprivate.so.%{dolphinprivate_major}*
 %_kde5_libdir/libdolphinprivate.so.5
 
@@ -119,38 +113,33 @@ Dolphin Library
 %define dolphinvcs_major 15
 %define libdolphinvcs %mklibname dolphinvcs %{dolphinvcs_major}
 
-%package -n %libdolphinvcs
-Summary:      Widgets for Baloo
-Group:        System/Libraries
+%package -n %{libdolphinvcs}
+Summary:	Dolphin library
+Group:		System/Libraries
 
+%description -n %{libdolphinvcs}
+Dolphin Library.
 
-%description -n %libdolphinvcs
-Dolphin Library
-
-%files -n %libdolphinvcs
+%files -n %{libdolphinvcs}
 %_kde5_libdir/libdolphinvcs.so.%{dolphinvcs_major}*
 %_kde5_libdir/libdolphinvcs.so.5
 
 #--------------------------------------------------------------------
 
-%define dolphin_devel %mklibname dolphin -d
+%package devel
+Summary:	Development stuff for %{name}
+Group:		Development/KDE and Qt
+Requires:	%{name} = %{EVRD}
+Requires:	%{libdolphinprivate} = %{EVRD}
+Requires:	%{libdolphinvcs} = %{EVRD}
+Provides:	%{name}-devel = %{EVRD}
+Obsoletes:	%{mklibname dolphin -d} < 15.08.2-2
 
-%package -n %dolphin_devel
-
-Summary:        Devel stuff for %name
-Group:          Development/KDE and Qt
-Requires:       %name = %epoch:%version-%release
-Requires:       %libdolphinprivate = %epoch:%version-%release
-Requires:       %libdolphinvcs = %epoch:%version-%release
-Provides:       %name-devel = %epoch:%{version}-%{release}
-
-
-
-%description -n %dolphin_devel
+%description devel
 This package contains header files needed if you wish to build applications
-based on %name.
+based on %{name}.
 
-%files -n %dolphin_devel
+%files devel
 %exclude %_kde5_libdir/libkdeinit5_dolphin.so
 %_includedir/Dolphin
 %_includedir/dolphin_export.h
@@ -160,13 +149,13 @@ based on %name.
 #--------------------------------------------------------------------
 
 %prep
-%setup -q 
+%setup -q
 %apply_patches
+%cmake_kde5 -DSYSCONF_INSTALL_DIR="%{_sysconfdir}" -G "Unix Makefiles"
 
 %build
-%cmake_kde5 -DSYSCONF_INSTALL_DIR="%_sysconfdir" -G "Unix Makefiles"
-%make
+%ninja -C build
 
 %install
-%makeinstall_std -C build
+%ninja_install -C build
 
