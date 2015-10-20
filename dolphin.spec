@@ -151,7 +151,7 @@ based on %{name}.
 %prep
 %setup -q
 %apply_patches
-%cmake_kde5 -DSYSCONF_INSTALL_DIR="%{_sysconfdir}" -G "Unix Makefiles"
+%cmake_kde5 -DSYSCONF_INSTALL_DIR="%{_sysconfdir}"
 
 %build
 %ninja -C build
