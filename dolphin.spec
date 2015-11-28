@@ -1,8 +1,8 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	15.08.2
+Version:	15.08.3
 Epoch:		1
-Release:	2
+Release:	1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 Source0:	http://download.kde.org/stable/applications/%{version}/src/%{name}-%{version}.tar.xz
