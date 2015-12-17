@@ -70,7 +70,7 @@ of file management.
 %_sysconfdir/xdg/servicemenu.knsrc
 %_kde5_libdir/libkdeinit5_dolphin.so
 %_qt5_plugindir/*.so
-%_kde5_datadir/appdata/dolphin.appdata.xml
+%_kde5_datadir/appdata/org.kde.dolphin.appdata.xml
 %_kde5_datadir/applications/org.kde.dolphin.desktop
 %_kde5_datadir/config.kcfg/*.kcfg
 %_datadir/dbus-1/interfaces/org.freedesktop.FileManager1.xml
@@ -94,12 +94,13 @@ This package provides %{name} Handbook.
 
 #--------------------------------------------------------------------
 
-%define dolphinprivate_major 15
+%define dolphinprivate_major 5
 %define libdolphinprivate %mklibname dolphinprivate %{dolphinprivate_major}
 
 %package -n %{libdolphinprivate}
 Summary:	Dolphin library
 Group:		System/Libraries
+Obsoletes:	%{mklibname dolphinprivate 15} < 15.12.0
 
 %description -n %{libdolphinprivate}
 Dolphin Library.
@@ -110,12 +111,13 @@ Dolphin Library.
 
 #--------------------------------------------------------------------
 
-%define dolphinvcs_major 15
+%define dolphinvcs_major 5
 %define libdolphinvcs %mklibname dolphinvcs %{dolphinvcs_major}
 
 %package -n %{libdolphinvcs}
 Summary:	Dolphin library
 Group:		System/Libraries
+Obsoletes:	%{mklibname dolphinvcs 15} < 15.12.0
 
 %description -n %{libdolphinvcs}
 Dolphin Library.
