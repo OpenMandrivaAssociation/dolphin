@@ -107,7 +107,6 @@ Dolphin Library.
 
 %files -n %{libdolphinprivate}
 %_kde5_libdir/libdolphinprivate.so.%{dolphinprivate_major}*
-%_kde5_libdir/libdolphinprivate.so.5
 
 #--------------------------------------------------------------------
 
@@ -124,7 +123,6 @@ Dolphin Library.
 
 %files -n %{libdolphinvcs}
 %_kde5_libdir/libdolphinvcs.so.%{dolphinvcs_major}*
-%_kde5_libdir/libdolphinvcs.so.5
 
 #--------------------------------------------------------------------
 
