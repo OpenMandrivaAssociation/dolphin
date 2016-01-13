@@ -1,8 +1,8 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	15.12.0
+Version:	15.12.1
 Epoch:		1
-Release:	2
+Release:	1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 Source0:	http://download.kde.org/stable/applications/%{version}/src/%{name}-%{version}.tar.xz
@@ -34,6 +34,8 @@ BuildRequires:	cmake(KF5Parts)
 BuildRequires:	cmake(KF5TextEditor)
 BuildRequires:	cmake(KF5WindowSystem)
 BuildRequires:	cmake(KF5Notifications)
+BuildRequires:	cmake(KF5XmlGui)
+BuildRequires:	cmake(KF5Attica)
 BuildRequires:	cmake(Phonon4Qt5)
 
 BuildRequires:	cmake(KF5Activities)
