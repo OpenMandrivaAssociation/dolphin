@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	16.04.3
+Version:	16.08.0
 Epoch:		1
 Release:	1
 License:	GPLv2+
@@ -72,9 +72,9 @@ of file management.
 %_sysconfdir/xdg/servicemenu.knsrc
 %_kde5_libdir/libkdeinit5_dolphin.so
 %_qt5_plugindir/*.so
-%_kde5_datadir/appdata/org.kde.dolphin.appdata.xml
 %_kde5_datadir/applications/org.kde.dolphin.desktop
 %_kde5_datadir/config.kcfg/*.kcfg
+%_datadir/metainfo/org.kde.dolphin.appdata.xml
 %_datadir/dbus-1/interfaces/org.freedesktop.FileManager1.xml
 %_datadir/dbus-1/services/org.kde.dolphin.FileManager1.service
 %_kde5_services/*.desktop
@@ -145,6 +145,7 @@ based on %{name}.
 %exclude %_kde5_libdir/libkdeinit5_dolphin.so
 %_includedir/Dolphin
 %_includedir/dolphin_export.h
+%_includedir/dolphinvcs_export.h
 %_libdir/cmake/DolphinVcs
 %_kde5_libdir/*.so
 
