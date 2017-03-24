@@ -1,11 +1,17 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	16.12.2
+Version:	17.03.80
 Epoch:		1
 Release:	1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
-Source0:	http://download.kde.org/stable/applications/%{version}/src/%{name}-%{version}.tar.xz
+%define is_beta %(if test `echo %{version} |cut -d. -f3` -ge 70; then echo -n 1; else echo -n 0; fi)
+%if %{is_beta}
+%define ftpdir unstable
+%else
+%define ftpdir stable
+%endif
+Source0:	http://download.kde.org/%{ftpdir}/applications/%{version}/src/%{name}-%{version}.tar.xz
 URL:		https://www.kde.org/
 # (tpg) Patch from Rosa https://abf.rosalinux.ru/import/plasma5-dolphin/commit/8d7cd84c80ed66937f5cedcba38fd66484e68b93
 Patch0:		dolphin-15.08.1-klook.patch
