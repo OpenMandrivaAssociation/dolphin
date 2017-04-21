@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	17.03.80
+Version:	17.04.0
 Epoch:		1
 Release:	1
 License:	GPLv2+
@@ -53,6 +53,7 @@ BuildRequires:	cmake(KF5KDELibs4Support)
 BuildRequires:	libxml2-utils
 BuildRequires:	docbook-dtds
 BuildRequires:	docbook-style-xsl
+BuildRequires:	ninja
 
 %description
 Dolphin is a file manager for KDE focusing on usability.
@@ -71,7 +72,7 @@ directories and a lot more, whereas Dolphin focuses on being only a file
 manager. This approach allows to optimize the user interface for the task
 of file management.
 
-%files
+%files -f %{name}.lang
 %_kde5_bindir/dolphin
 %_kde5_bindir/servicemenudeinstallation
 %_kde5_bindir/servicemenuinstallation
@@ -162,9 +163,9 @@ based on %{name}.
 %apply_patches
 
 %build
-%cmake_kde5 -DSYSCONF_INSTALL_DIR="%{_sysconfdir}" -G "Unix Makefiles"
-%make
+%cmake_kde5 -DSYSCONF_INSTALL_DIR="%{_sysconfdir}"
+%ninja
 
 %install
-%makeinstall_std -C build
-
+%ninja_install -C build
+%find_lang %{name}
