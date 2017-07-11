@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	17.04.2
+Version:	17.04.3
 Epoch:		1
 Release:	1
 License:	GPLv2+
@@ -88,6 +88,7 @@ of file management.
 %_kde5_servicetypes/fileviewversioncontrolplugin.desktop
 %_kde5_datadir/kxmlgui5/dolphin
 %_kde5_datadir/kxmlgui5/dolphinpart
+%lang(fi) %{_datadir}/locale/fi/LC_SCRIPTS/dolphin
 
 #--------------------------------------------------------------------
 
