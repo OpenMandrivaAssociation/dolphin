@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	17.04.3
+Version:	17.07.90
 Epoch:		1
 Release:	1
 License:	GPLv2+
@@ -72,22 +72,20 @@ directories and a lot more, whereas Dolphin focuses on being only a file
 manager. This approach allows to optimize the user interface for the task
 of file management.
 
-%files -f %{name}.lang
-%_kde5_bindir/dolphin
-%_kde5_bindir/servicemenudeinstallation
-%_kde5_bindir/servicemenuinstallation
+%files -f %{name}.translations
+%_bindir/dolphin
+%_bindir/servicemenudeinstallation
+%_bindir/servicemenuinstallation
 %_sysconfdir/xdg/servicemenu.knsrc
-%_kde5_libdir/libkdeinit5_dolphin.so
+%_libdir/libkdeinit5_dolphin.so
 %_qt5_plugindir/*.so
-%_kde5_datadir/applications/org.kde.dolphin.desktop
-%_kde5_datadir/config.kcfg/*.kcfg
+%_datadir/applications/org.kde.dolphin.desktop
+%_datadir/config.kcfg/*.kcfg
 %_datadir/metainfo/org.kde.dolphin.appdata.xml
 %_datadir/dbus-1/interfaces/org.freedesktop.FileManager1.xml
 %_datadir/dbus-1/services/org.kde.dolphin.FileManager1.service
 %_kde5_services/*.desktop
 %_kde5_servicetypes/fileviewversioncontrolplugin.desktop
-%_kde5_datadir/kxmlgui5/dolphin
-%_kde5_datadir/kxmlgui5/dolphinpart
 %lang(fi) %{_datadir}/locale/fi/LC_SCRIPTS/dolphin
 
 #--------------------------------------------------------------------
@@ -99,8 +97,7 @@ BuildArch:	noarch
 %description handbook
 This package provides %{name} Handbook.
 
-%files handbook
-%doc %_docdir/HTML/*/dolphin
+%files handbook -f handbook.list
 
 #--------------------------------------------------------------------
 
@@ -116,7 +113,7 @@ Obsoletes:	%{mklibname dolphinprivate 15} < 15.12.0
 Dolphin Library.
 
 %files -n %{libdolphinprivate}
-%_kde5_libdir/libdolphinprivate.so.%{dolphinprivate_major}*
+%_libdir/libdolphinprivate.so.%{dolphinprivate_major}*
 
 #--------------------------------------------------------------------
 
@@ -132,7 +129,7 @@ Obsoletes:	%{mklibname dolphinvcs 15} < 15.12.0
 Dolphin Library.
 
 %files -n %{libdolphinvcs}
-%_kde5_libdir/libdolphinvcs.so.%{dolphinvcs_major}*
+%_libdir/libdolphinvcs.so.%{dolphinvcs_major}*
 
 #--------------------------------------------------------------------
 
@@ -150,12 +147,12 @@ This package contains header files needed if you wish to build applications
 based on %{name}.
 
 %files devel
-%exclude %_kde5_libdir/libkdeinit5_dolphin.so
+%exclude %_libdir/libkdeinit5_dolphin.so
 %_includedir/Dolphin
 %_includedir/dolphin_export.h
 %_includedir/dolphinvcs_export.h
 %_libdir/cmake/DolphinVcs
-%_kde5_libdir/*.so
+%_libdir/*.so
 
 #--------------------------------------------------------------------
 
@@ -169,4 +166,6 @@ based on %{name}.
 
 %install
 %ninja_install -C build
-%find_lang %{name}
+%find_lang %{name} --all-name --with-html
+grep %_docdir %{name}.lang >handbook.list
+grep -v %_docdir %{name}.lang >%{name}.translations
