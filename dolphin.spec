@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	17.08.1
+Version:	17.08.3
 Epoch:		1
 Release:	1
 License:	GPLv2+
