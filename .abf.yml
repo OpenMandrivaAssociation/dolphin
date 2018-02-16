@@ -1,2 +1,4 @@
-sources:
+removed_sources:
   dolphin-17.12.1.tar.xz: 02200a2a67fb25f84154c4f9c7d214f406f7555b
+sources:
+  dolphin-17.12.2.tar.xz: c6109703c55e11c30e4c8d86df99e3dab134b3f3
