@@ -1,6 +1,7 @@
---- dolphin-17.11.90/src/CMakeLists.txt.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/CMakeLists.txt	2017-12-01 18:01:24.077533764 +0100
-@@ -63,6 +63,7 @@ set(dolphinprivate_LIB_SRCS
+diff -up dolphin-18.04.2/src/CMakeLists.txt.0000~ dolphin-18.04.2/src/CMakeLists.txt
+--- dolphin-18.04.2/src/CMakeLists.txt.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/CMakeLists.txt	2018-06-07 15:12:03.445819684 +0200
+@@ -62,6 +62,7 @@ set(dolphinprivate_LIB_SRCS
      kitemviews/kitemlistgroupheader.cpp
      kitemviews/kitemlistheader.cpp
      kitemviews/kitemlistselectionmanager.cpp
@@ -8,27 +9,28 @@
      kitemviews/kitemliststyleoption.cpp
      kitemviews/kitemlistview.cpp
      kitemviews/kitemlistviewaccessible.cpp
---- dolphin-17.11.90/src/dolphinmainwindow.cpp.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/dolphinmainwindow.cpp	2017-12-01 18:57:38.135308039 +0100
-@@ -82,6 +82,7 @@
- #include <QCloseEvent>
- #include <QShowEvent>
- #include <QDialog>
+diff -up dolphin-18.04.2/src/dolphinmainwindow.cpp.0000~ dolphin-18.04.2/src/dolphinmainwindow.cpp
+--- dolphin-18.04.2/src/dolphinmainwindow.cpp.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/dolphinmainwindow.cpp	2018-06-07 15:23:27.074857131 +0200
+@@ -80,6 +80,7 @@
+ #include <QStandardPaths>
+ #include <QTimer>
+ #include <QToolButton>
 +#include <QProcess>
+ #include <kdualaction.h>
  
  namespace {
-     // Used for GeneralSettings::version() to determine whether
-@@ -104,7 +105,8 @@ DolphinMainWindow::DolphinMainWindow() :
-     m_terminalPanel(0),
- #endif
-     m_placesPanel(0),
+@@ -101,7 +102,8 @@ DolphinMainWindow::DolphinMainWindow() :
+     m_lastHandleUrlStatJob(nullptr),
+     m_terminalPanel(nullptr),
+     m_placesPanel(nullptr),
 -    m_tearDownFromPlacesRequested(false)
 +    m_tearDownFromPlacesRequested(false),
 +    m_isFocusOnTerminal(false)
  {
      Q_INIT_RESOURCE(dolphin);
  
-@@ -182,6 +184,8 @@ DolphinMainWindow::DolphinMainWindow() :
+@@ -179,6 +181,8 @@ DolphinMainWindow::DolphinMainWindow() :
      auto *middleClickEventFilter = new MiddleClickActionEventFilter(this);
      connect(middleClickEventFilter, &MiddleClickActionEventFilter::actionMiddleClicked, this, &DolphinMainWindow::slotToolBarActionMiddleClicked);
      toolBar()->installEventFilter(middleClickEventFilter);
@@ -37,7 +39,7 @@
  }
  
  DolphinMainWindow::~DolphinMainWindow()
-@@ -282,6 +286,14 @@ void DolphinMainWindow::slotSelectionCha
+@@ -279,6 +283,14 @@ void DolphinMainWindow::slotSelectionCha
          compareFilesAction->setEnabled(false);
      }
  
@@ -52,7 +54,7 @@
      emit selectionChanged(selection);
  }
  
-@@ -1215,6 +1227,14 @@ void DolphinMainWindow::setupActions()
+@@ -1251,6 +1263,14 @@ void DolphinMainWindow::setupActions()
      openInNewWindow->setText(i18nc("@action:inmenu", "Open in New Window"));
      openInNewWindow->setIcon(QIcon::fromTheme(QStringLiteral("window-new")));
      connect(openInNewWindow, &QAction::triggered, this, &DolphinMainWindow::openInNewWindow);
@@ -67,7 +69,7 @@
  }
  
  void DolphinMainWindow::setupDockWidgets()
-@@ -1507,6 +1527,9 @@ void DolphinMainWindow::connectViewSigna
+@@ -1544,6 +1564,9 @@ void DolphinMainWindow::connectViewSigna
              this, static_cast<void(DolphinMainWindow::*)()>(&DolphinMainWindow::goForward));
      connect(view, &DolphinView::urlActivated,
              this, &DolphinMainWindow::handleUrl);
@@ -77,7 +79,7 @@
  
      const KUrlNavigator* navigator = container->urlNavigator();
      connect(navigator, &KUrlNavigator::urlChanged,
-@@ -1519,6 +1542,54 @@ void DolphinMainWindow::connectViewSigna
+@@ -1556,6 +1579,54 @@ void DolphinMainWindow::connectViewSigna
              this, &DolphinMainWindow::openNewTab);
  }
  
@@ -132,9 +134,10 @@
  void DolphinMainWindow::updateSplitAction()
  {
      QAction* splitAction = actionCollection()->action(QStringLiteral("split_view"));
---- dolphin-17.11.90/src/dolphinmainwindow.h.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/dolphinmainwindow.h	2017-12-01 18:59:32.702254300 +0100
-@@ -35,6 +35,7 @@
+diff -up dolphin-18.04.2/src/dolphinmainwindow.h.0000~ dolphin-18.04.2/src/dolphinmainwindow.h
+--- dolphin-18.04.2/src/dolphinmainwindow.h.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/dolphinmainwindow.h	2018-06-07 15:23:52.842858542 +0200
+@@ -34,6 +34,7 @@
  
  typedef KIO::FileUndoManager::CommandType CommandType;
  
@@ -142,15 +145,15 @@
  class DolphinViewActionHandler;
  class DolphinSettingsDialog;
  class DolphinViewContainer;
-@@ -46,6 +47,7 @@ class KJob;
+@@ -45,6 +46,7 @@ class KJob;
  class KNewFileMenu;
  class QToolButton;
  class QIcon;
 +class Panel;
  class PlacesPanel;
- #ifndef Q_OS_WIN
  class TerminalPanel;
-@@ -96,6 +98,8 @@ public:
+ 
+@@ -92,6 +94,8 @@ public:
  
      void setTabsToHomeIfMountPathOpen(const QString& mountPath);
  
@@ -159,7 +162,7 @@
  public slots:
      /**
       * Pastes the clipboard data into the currently selected folder
-@@ -338,6 +342,12 @@ private slots:
+@@ -335,6 +339,12 @@ private slots:
      void openInNewTab();
  
      /**
@@ -172,25 +175,26 @@
       * Opens the selected folder in a new window.
       */
      void openInNewWindow();
-@@ -523,6 +533,7 @@ private:
- #endif
+@@ -522,6 +532,7 @@ private:
+     TerminalPanel* m_terminalPanel;
      PlacesPanel* m_placesPanel;
      bool m_tearDownFromPlacesRequested;
 +    bool m_isFocusOnTerminal;
  };
  
  inline DolphinViewContainer* DolphinMainWindow::activeViewContainer() const
---- dolphin-17.11.90/src/kitemviews/kfileitemlistwidget.cpp.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/kitemviews/kfileitemlistwidget.cpp	2017-12-01 18:01:24.078533766 +0100
-@@ -25,6 +25,7 @@
- #include <KIO/MetaData>
- #include <QDateTime>
+diff -up dolphin-18.04.2/src/kitemviews/kfileitemlistwidget.cpp.0000~ dolphin-18.04.2/src/kitemviews/kfileitemlistwidget.cpp
+--- dolphin-18.04.2/src/kitemviews/kfileitemlistwidget.cpp.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/kitemviews/kfileitemlistwidget.cpp	2018-06-07 15:24:47.698861547 +0200
+@@ -22,6 +22,7 @@
+ #include "kitemlistview.h"
+ 
  #include <KFormat>
 +#include <KIconLoader>
- #include <QMimeDatabase>
- #include <QLocale>
+ #include <KLocalizedString>
  
-@@ -99,6 +100,44 @@ QFont KFileItemListWidgetInformant::cust
+ #include <QMimeDatabase>
+@@ -97,6 +98,44 @@ QFont KFileItemListWidgetInformant::cust
  }
  
  
@@ -235,19 +239,21 @@
  KFileItemListWidget::KFileItemListWidget(KItemListWidgetInformant* informant, QGraphicsItem* parent) :
      KStandardItemListWidget(informant, parent)
  {
---- dolphin-17.11.90/src/kitemviews/kfileitemlistwidget.h.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/kitemviews/kfileitemlistwidget.h	2017-12-01 18:01:24.078533766 +0100
-@@ -46,6 +46,7 @@ public:
-     virtual ~KFileItemListWidget();
+diff -up dolphin-18.04.2/src/kitemviews/kfileitemlistwidget.h.0000~ dolphin-18.04.2/src/kitemviews/kfileitemlistwidget.h
+--- dolphin-18.04.2/src/kitemviews/kfileitemlistwidget.h.0000~	2018-06-07 15:12:03.448819684 +0200
++++ dolphin-18.04.2/src/kitemviews/kfileitemlistwidget.h	2018-06-07 15:25:09.562862745 +0200
+@@ -45,6 +45,7 @@ public:
+     ~KFileItemListWidget() override;
  
      static KItemListWidgetInformant* createInformant();
 +    virtual QRectF klookToggleRect() const;
  
  protected:
-     virtual bool isRoleRightAligned(const QByteArray& role) const Q_DECL_OVERRIDE;
---- dolphin-17.11.90/src/kitemviews/kitemlistcontroller.cpp.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/kitemviews/kitemlistcontroller.cpp	2017-12-01 18:01:24.078533766 +0100
-@@ -560,6 +560,13 @@ bool KItemListController::mousePressEven
+     bool isRoleRightAligned(const QByteArray& role) const override;
+diff -up dolphin-18.04.2/src/kitemviews/kitemlistcontroller.cpp.0000~ dolphin-18.04.2/src/kitemviews/kitemlistcontroller.cpp
+--- dolphin-18.04.2/src/kitemviews/kitemlistcontroller.cpp.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/kitemviews/kitemlistcontroller.cpp	2018-06-07 15:12:03.449819684 +0200
+@@ -570,6 +570,13 @@ bool KItemListController::mousePressEven
          m_selectionManager->beginAnchoredSelection(m_pressedIndex);
          return true;
      }
@@ -261,9 +267,10 @@
  
      const bool shiftPressed = event->modifiers() & Qt::ShiftModifier;
      const bool controlPressed = event->modifiers() & Qt::ControlModifier;
---- dolphin-17.11.90/src/kitemviews/kitemlistcontroller.h.0000~	2017-12-01 18:01:24.078533766 +0100
-+++ dolphin-17.11.90/src/kitemviews/kitemlistcontroller.h	2017-12-01 19:00:21.982255116 +0100
-@@ -239,6 +239,8 @@ signals:
+diff -up dolphin-18.04.2/src/kitemviews/kitemlistcontroller.h.0000~ dolphin-18.04.2/src/kitemviews/kitemlistcontroller.h
+--- dolphin-18.04.2/src/kitemviews/kitemlistcontroller.h.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/kitemviews/kitemlistcontroller.h	2018-06-07 15:12:03.449819684 +0200
+@@ -241,6 +241,8 @@ signals:
  
      void selectedItemTextPressed(int index);
  
@@ -272,8 +279,9 @@
  private slots:
      void slotViewScrollOffsetChanged(qreal current, qreal previous);
  
---- dolphin-17.11.90/src/kitemviews/kitemlistklooktoggle.cpp.0000~	2017-12-01 18:01:24.078533766 +0100
-+++ dolphin-17.11.90/src/kitemviews/kitemlistklooktoggle.cpp	2017-12-01 18:01:24.078533766 +0100
+diff -up dolphin-18.04.2/src/kitemviews/kitemlistklooktoggle.cpp.0000~ dolphin-18.04.2/src/kitemviews/kitemlistklooktoggle.cpp
+--- dolphin-18.04.2/src/kitemviews/kitemlistklooktoggle.cpp.0000~	2018-06-07 15:12:03.449819684 +0200
++++ dolphin-18.04.2/src/kitemviews/kitemlistklooktoggle.cpp	2018-06-07 15:12:03.449819684 +0200
 @@ -0,0 +1,103 @@
 +/***************************************************************************
 + *   Copyright (C) 2011 by Peter Penz <peter.penz19@gmail.com>             *
@@ -378,8 +386,9 @@
 +    }
 +}
 +
---- dolphin-17.11.90/src/kitemviews/kitemlistklooktoggle_p.h.0000~	2017-12-01 18:01:24.078533766 +0100
-+++ dolphin-17.11.90/src/kitemviews/kitemlistklooktoggle_p.h	2017-12-01 18:01:24.078533766 +0100
+diff -up dolphin-18.04.2/src/kitemviews/kitemlistklooktoggle_p.h.0000~ dolphin-18.04.2/src/kitemviews/kitemlistklooktoggle_p.h
+--- dolphin-18.04.2/src/kitemviews/kitemlistklooktoggle_p.h.0000~	2018-06-07 15:12:03.450819684 +0200
++++ dolphin-18.04.2/src/kitemviews/kitemlistklooktoggle_p.h	2018-06-07 15:12:03.450819684 +0200
 @@ -0,0 +1,61 @@
 +/***************************************************************************
 + *   Copyright (C) 2011 by Peter Penz <peter.penz19@gmail.com>             *
@@ -442,9 +451,10 @@
 +#endif
 +
 +
---- dolphin-17.11.90/src/kitemviews/kitemlistview.cpp.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/kitemviews/kitemlistview.cpp	2017-12-01 18:01:24.078533766 +0100
-@@ -74,6 +74,7 @@ QAccessibleInterface* accessibleInterfac
+diff -up dolphin-18.04.2/src/kitemviews/kitemlistview.cpp.0000~ dolphin-18.04.2/src/kitemviews/kitemlistview.cpp
+--- dolphin-18.04.2/src/kitemviews/kitemlistview.cpp.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/kitemviews/kitemlistview.cpp	2018-06-07 15:12:03.451819684 +0200
+@@ -69,6 +69,7 @@ QAccessibleInterface* accessibleInterfac
  KItemListView::KItemListView(QGraphicsWidget* parent) :
      QGraphicsWidget(parent),
      m_enabledSelectionToggles(false),
@@ -452,7 +462,7 @@
      m_grouped(false),
      m_supportsItemExpanding(false),
      m_editingRole(false),
-@@ -297,6 +298,25 @@ bool KItemListView::enabledSelectionTogg
+@@ -292,6 +293,25 @@ bool KItemListView::enabledSelectionTogg
      return m_enabledSelectionToggles;
  }
  
@@ -478,7 +488,7 @@
  KItemListController* KItemListView::controller() const
  {
      return m_controller;
-@@ -462,6 +482,25 @@ bool KItemListView::isAboveText(int inde
+@@ -457,6 +477,25 @@ bool KItemListView::isAboveText(int inde
      return false;
  }
  
@@ -504,7 +514,7 @@
  int KItemListView::firstVisibleIndex() const
  {
      return m_layouter->firstVisibleIndex();
-@@ -2014,6 +2053,7 @@ void KItemListView::updateWidgetProperti
+@@ -2009,6 +2048,7 @@ void KItemListView::updateWidgetProperti
      widget->setSelected(selectionManager->isSelected(index));
      widget->setHovered(false);
      widget->setEnabledSelectionToggle(enabledSelectionToggles());
@@ -512,8 +522,9 @@
      widget->setIndex(index);
      widget->setData(m_model->data(index));
      widget->setSiblingsInformation(QBitArray());
---- dolphin-17.11.90/src/kitemviews/kitemlistview.h.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/kitemviews/kitemlistview.h	2017-12-01 18:59:53.782253040 +0100
+diff -up dolphin-18.04.2/src/kitemviews/kitemlistview.h.0000~ dolphin-18.04.2/src/kitemviews/kitemlistview.h
+--- dolphin-18.04.2/src/kitemviews/kitemlistview.h.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/kitemviews/kitemlistview.h	2018-06-07 15:12:03.451819684 +0200
 @@ -111,6 +111,9 @@ public:
      void setEnabledSelectionToggles(bool enabled);
      bool enabledSelectionToggles() const;
@@ -540,17 +551,18 @@
      bool m_grouped;
      bool m_supportsItemExpanding;
      bool m_editingRole;
---- dolphin-17.11.90/src/kitemviews/kitemlistwidget.cpp.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/kitemviews/kitemlistwidget.cpp	2017-12-01 18:01:24.079533769 +0100
+diff -up dolphin-18.04.2/src/kitemviews/kitemlistwidget.cpp.0000~ dolphin-18.04.2/src/kitemviews/kitemlistwidget.cpp
+--- dolphin-18.04.2/src/kitemviews/kitemlistwidget.cpp.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/kitemviews/kitemlistwidget.cpp	2018-06-07 15:27:15.434869640 +0200
 @@ -22,6 +22,7 @@
  
  #include "kitemlistwidget.h"
  
 +#include "kitemlistklooktoggle_p.h"
  #include "kitemlistview.h"
- #include "kitemmodelbase.h"
+ #include "private/kitemlistselectiontoggle.h"
  
-@@ -50,6 +51,7 @@ KItemListWidget::KItemListWidget(KItemLi
+@@ -47,6 +48,7 @@ KItemListWidget::KItemListWidget(KItemLi
      m_hovered(false),
      m_alternateBackground(false),
      m_enabledSelectionToggle(false),
@@ -558,27 +570,27 @@
      m_data(),
      m_visibleRoles(),
      m_columnWidths(),
-@@ -59,7 +61,8 @@ KItemListWidget::KItemListWidget(KItemLi
-     m_hoverCache(0),
-     m_hoverAnimation(0),
-     m_selectionToggle(0),
+@@ -56,7 +58,8 @@ KItemListWidget::KItemListWidget(KItemLi
+     m_hoverCache(nullptr),
+     m_hoverAnimation(nullptr),
+     m_selectionToggle(nullptr),
 -    m_editedRole()
 +    m_editedRole(),
 +    m_klookToggle(0)
  {
  }
  
-@@ -74,6 +77,9 @@ void KItemListWidget::setIndex(int index
+@@ -71,6 +74,9 @@ void KItemListWidget::setIndex(int index
          delete m_selectionToggle;
-         m_selectionToggle = 0;
+         m_selectionToggle = nullptr;
  
-+        delete m_klookToggle;
-+        m_klookToggle = 0;
++	delete m_klookToggle;
++	m_klookToggle = nullptr;
 +
          if (m_hoverAnimation) {
              m_hoverAnimation->stop();
              m_hoverOpacity = 0;
-@@ -261,6 +267,9 @@ void KItemListWidget::setHovered(bool ho
+@@ -258,6 +264,9 @@ void KItemListWidget::setHovered(bool ho
          if (m_enabledSelectionToggle && !(QApplication::mouseButtons() & Qt::LeftButton)) {
              initializeSelectionToggle();
          }
@@ -588,7 +600,7 @@
      } else {
          m_hoverAnimation->setStartValue(hoverOpacity());
          m_hoverAnimation->setEndValue(0.0);
-@@ -311,6 +320,19 @@ bool KItemListWidget::enabledSelectionTo
+@@ -308,6 +317,19 @@ bool KItemListWidget::enabledSelectionTo
      return m_enabledSelectionToggle;
  }
  
@@ -608,7 +620,7 @@
  void KItemListWidget::setSiblingsInformation(const QBitArray& siblings)
  {
      const QBitArray previous = m_siblingsInfo;
-@@ -360,6 +382,12 @@ QRectF KItemListWidget::selectionToggleR
+@@ -357,6 +379,12 @@ QRectF KItemListWidget::selectionToggleR
      return QRectF();
  }
  
@@ -621,16 +633,16 @@
  QRectF KItemListWidget::expansionToggleRect() const
  {
      return QRectF();
-@@ -475,6 +503,8 @@ void KItemListWidget::slotHoverAnimation
+@@ -472,6 +500,8 @@ void KItemListWidget::slotHoverAnimation
      if (!m_hovered && m_selectionToggle) {
          m_selectionToggle->deleteLater();
-         m_selectionToggle = 0;
-+        delete m_klookToggle;
-+        m_klookToggle = 0;
+         m_selectionToggle = nullptr;
++	m_klookToggle->deleteLater();
++	m_klookToggle = nullptr;
      }
  }
  
-@@ -493,12 +523,29 @@ void KItemListWidget::initializeSelectio
+@@ -490,12 +520,29 @@ void KItemListWidget::initializeSelectio
      m_selectionToggle->setChecked(isSelected());
  }
  
@@ -660,9 +672,10 @@
  
      if (m_hoverOpacity <= 0.0) {
          delete m_hoverCache;
---- dolphin-17.11.90/src/kitemviews/kitemlistwidget.h.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/kitemviews/kitemlistwidget.h	2017-12-01 18:01:24.079533769 +0100
-@@ -33,6 +33,7 @@
+diff -up dolphin-18.04.2/src/kitemviews/kitemlistwidget.h.0000~ dolphin-18.04.2/src/kitemviews/kitemlistwidget.h
+--- dolphin-18.04.2/src/kitemviews/kitemlistwidget.h.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/kitemviews/kitemlistwidget.h	2018-06-07 15:25:58.242865411 +0200
+@@ -32,6 +32,7 @@
  
  class KItemListSelectionToggle;
  class KItemListView;
@@ -670,7 +683,7 @@
  class QPropertyAnimation;
  
  /**
-@@ -116,6 +117,9 @@ public:
+@@ -115,6 +116,9 @@ public:
      void setEnabledSelectionToggle(bool enabled);
      bool enabledSelectionToggle() const;
  
@@ -680,20 +693,19 @@
      /**
       * Sets the sibling information for the item and all of its parents.
       * The sibling information of the upper most parent is represented by
-@@ -188,6 +192,12 @@ public:
+@@ -187,6 +191,11 @@ public:
       */
-     virtual QPixmap createDragPixmap(const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
+     virtual QPixmap createDragPixmap(const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr);
  
-+     /**
++    /**
 +     * @return Rectangle for the klook-toggle that is used for item preview.
 +     */
 +    virtual QRectF klookToggleRect() const;
 +
-+
  signals:
      void roleEditingCanceled(int index, const QByteArray& role, const QVariant& value);
      void roleEditingFinished(int index, const QByteArray& role, const QVariant& value);
-@@ -218,6 +228,7 @@ private slots:
+@@ -217,6 +226,7 @@ private slots:
  
  private:
      void initializeSelectionToggle();
@@ -701,7 +713,7 @@
      void setHoverOpacity(qreal opacity);
      void clearHoverCache();
      void drawItemStyleOption(QPainter* painter, QWidget* widget, QStyle::State styleState);
-@@ -232,6 +243,7 @@ private:
+@@ -231,6 +241,7 @@ private:
      bool m_hovered;
      bool m_alternateBackground;
      bool m_enabledSelectionToggle;
@@ -709,7 +721,7 @@
      QHash<QByteArray, QVariant> m_data;
      QList<QByteArray> m_visibleRoles;
      QHash<QByteArray, qreal> m_columnWidths;
-@@ -245,6 +257,8 @@ private:
+@@ -244,6 +255,8 @@ private:
      KItemListSelectionToggle* m_selectionToggle;
  
      QByteArray m_editedRole;
@@ -718,17 +730,18 @@
  };
  
  inline const KItemListWidgetInformant* KItemListWidget::informant() const
---- dolphin-17.11.90/src/kitemviews/kstandarditemlistwidget.h.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/kitemviews/kstandarditemlistwidget.h	2017-12-01 19:00:45.870260087 +0100
-@@ -184,6 +184,7 @@ protected:
-     virtual void showEvent(QShowEvent* event) Q_DECL_OVERRIDE;
-     virtual void hideEvent(QHideEvent* event) Q_DECL_OVERRIDE;
-     bool event(QEvent *event) Q_DECL_OVERRIDE;
+diff -up dolphin-18.04.2/src/kitemviews/kstandarditemlistwidget.h.0000~ dolphin-18.04.2/src/kitemviews/kstandarditemlistwidget.h
+--- dolphin-18.04.2/src/kitemviews/kstandarditemlistwidget.h.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/kitemviews/kstandarditemlistwidget.h	2018-06-07 15:27:48.563871454 +0200
+@@ -183,6 +183,7 @@ protected:
+     void showEvent(QShowEvent* event) override;
+     void hideEvent(QHideEvent* event) override;
+     bool event(QEvent *event) override;
 +    void triggerCacheRefreshing();
  
  public slots:
      void finishRoleEditing();
-@@ -194,7 +195,6 @@ private slots:
+@@ -193,7 +194,6 @@ private slots:
      void slotRoleEditingFinished(const QByteArray& role, const QVariant& value);
  
  private:
@@ -736,8 +749,9 @@
      void updateExpansionArea();
      void updatePixmapCache();
  
---- dolphin-17.11.90/src/settings/dolphin_generalsettings.kcfg.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/settings/dolphin_generalsettings.kcfg	2017-12-01 18:01:24.079533769 +0100
+diff -up dolphin-18.04.2/src/settings/dolphin_generalsettings.kcfg.0000~ dolphin-18.04.2/src/settings/dolphin_generalsettings.kcfg
+--- dolphin-18.04.2/src/settings/dolphin_generalsettings.kcfg.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/settings/dolphin_generalsettings.kcfg	2018-06-07 15:12:03.452819684 +0200
 @@ -70,6 +70,10 @@
              <label>Use tab for switching between right and left split</label>
              <default>false</default>
@@ -749,9 +763,10 @@
          <entry name="ShowToolTips" type="Bool">
              <label>Show tooltips</label>
              <default>false</default>
---- dolphin-17.11.90/src/settings/general/behaviorsettingspage.cpp.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/settings/general/behaviorsettingspage.cpp	2017-12-01 18:58:14.798281656 +0100
-@@ -42,7 +42,8 @@ BehaviorSettingsPage::BehaviorSettingsPa
+diff -up dolphin-18.04.2/src/settings/general/behaviorsettingspage.cpp.0000~ dolphin-18.04.2/src/settings/general/behaviorsettingspage.cpp
+--- dolphin-18.04.2/src/settings/general/behaviorsettingspage.cpp.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/settings/general/behaviorsettingspage.cpp	2018-06-07 15:12:03.453819684 +0200
+@@ -40,7 +40,8 @@ BehaviorSettingsPage::BehaviorSettingsPa
      m_caseSensitiveSorting(nullptr),
      m_caseInsensitiveSorting(nullptr),
      m_renameInline(nullptr),
@@ -761,7 +776,7 @@
  {
      QVBoxLayout* topLayout = new QVBoxLayout(this);
  
-@@ -76,6 +77,9 @@ BehaviorSettingsPage::BehaviorSettingsPa
+@@ -74,6 +75,9 @@ BehaviorSettingsPage::BehaviorSettingsPa
      // 'Show selection marker'
      m_showSelectionToggle = new QCheckBox(i18nc("@option:check", "Show selection marker"), this);
  
@@ -771,7 +786,7 @@
      // 'Inline renaming of items'
      m_renameInline = new QCheckBox(i18nc("option:check", "Rename inline"), this);
  
-@@ -87,6 +91,7 @@ BehaviorSettingsPage::BehaviorSettingsPa
+@@ -85,6 +89,7 @@ BehaviorSettingsPage::BehaviorSettingsPa
      topLayout->addWidget(m_showToolTips);
      topLayout->addWidget(m_showSelectionToggle);
      topLayout->addWidget(m_renameInline);
@@ -779,7 +794,7 @@
      topLayout->addWidget(m_useTabForSplitViewSwitch);
      topLayout->addStretch();
  
-@@ -96,6 +101,7 @@ BehaviorSettingsPage::BehaviorSettingsPa
+@@ -94,6 +99,7 @@ BehaviorSettingsPage::BehaviorSettingsPa
      connect(m_globalViewProps, &QRadioButton::toggled, this, &BehaviorSettingsPage::changed);
      connect(m_showToolTips, &QCheckBox::toggled, this, &BehaviorSettingsPage::changed);
      connect(m_showSelectionToggle, &QCheckBox::toggled, this, &BehaviorSettingsPage::changed);
@@ -787,7 +802,7 @@
      connect(m_naturalSorting, &QRadioButton::toggled, this, &BehaviorSettingsPage::changed);
      connect(m_caseInsensitiveSorting, &QRadioButton::toggled, this, &BehaviorSettingsPage::changed);
      connect(m_caseSensitiveSorting, &QRadioButton::toggled, this, &BehaviorSettingsPage::changed);
-@@ -118,6 +124,7 @@ void BehaviorSettingsPage::applySettings
+@@ -116,6 +122,7 @@ void BehaviorSettingsPage::applySettings
      settings->setShowSelectionToggle(m_showSelectionToggle->isChecked());
      setSortingChoiceValue(settings);
      settings->setRenameInline(m_renameInline->isChecked());
@@ -795,7 +810,7 @@
      settings->setUseTabForSwitchingSplitView(m_useTabForSplitViewSwitch->isChecked());
      settings->save();
  
-@@ -148,6 +155,7 @@ void BehaviorSettingsPage::loadSettings(
+@@ -146,6 +153,7 @@ void BehaviorSettingsPage::loadSettings(
      m_showToolTips->setChecked(GeneralSettings::showToolTips());
      m_showSelectionToggle->setChecked(GeneralSettings::showSelectionToggle());
      m_renameInline->setChecked(GeneralSettings::renameInline());
@@ -803,9 +818,10 @@
      m_useTabForSplitViewSwitch->setChecked(GeneralSettings::useTabForSwitchingSplitView());
  
      loadSortingChoiceSettings();
---- dolphin-17.11.90/src/settings/general/behaviorsettingspage.h.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/settings/general/behaviorsettingspage.h	2017-12-01 18:01:24.079533769 +0100
-@@ -65,6 +65,7 @@ private:
+diff -up dolphin-18.04.2/src/settings/general/behaviorsettingspage.h.0000~ dolphin-18.04.2/src/settings/general/behaviorsettingspage.h
+--- dolphin-18.04.2/src/settings/general/behaviorsettingspage.h.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/settings/general/behaviorsettingspage.h	2018-06-07 15:12:03.453819684 +0200
+@@ -66,6 +66,7 @@ private:
      QRadioButton* m_caseInsensitiveSorting;
  
      QCheckBox* m_renameInline;
@@ -813,9 +829,10 @@
      QCheckBox* m_useTabForSplitViewSwitch;
  };
  
---- dolphin-17.11.90/src/views/dolphinitemlistview.cpp.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/views/dolphinitemlistview.cpp	2017-12-01 18:01:24.079533769 +0100
-@@ -40,6 +40,7 @@ DolphinItemListView::DolphinItemListView
+diff -up dolphin-18.04.2/src/views/dolphinitemlistview.cpp.0000~ dolphin-18.04.2/src/views/dolphinitemlistview.cpp
+--- dolphin-18.04.2/src/views/dolphinitemlistview.cpp.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/views/dolphinitemlistview.cpp	2018-06-07 15:12:03.453819684 +0200
+@@ -36,6 +36,7 @@ DolphinItemListView::DolphinItemListView
      KFileItemListView(parent),
      m_zoomLevel(0)
  {
@@ -823,7 +840,7 @@
      updateFont();
      updateGridSize();
  }
-@@ -87,6 +88,7 @@ void DolphinItemListView::readSettings()
+@@ -83,6 +84,7 @@ void DolphinItemListView::readSettings()
  
      beginTransaction();
  
@@ -831,9 +848,10 @@
      setEnabledSelectionToggles(GeneralSettings::showSelectionToggle());
      setSupportsItemExpanding(itemLayoutSupportsItemExpanding(itemLayout()));
  
---- dolphin-17.11.90/src/views/dolphinview.cpp.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/views/dolphinview.cpp	2017-12-01 18:58:42.974267444 +0100
-@@ -152,6 +152,7 @@ DolphinView::DolphinView(const QUrl& url
+diff -up dolphin-18.04.2/src/views/dolphinview.cpp.0000~ dolphin-18.04.2/src/views/dolphinview.cpp
+--- dolphin-18.04.2/src/views/dolphinview.cpp.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/views/dolphinview.cpp	2018-06-07 15:12:03.454819684 +0200
+@@ -145,6 +145,7 @@ DolphinView::DolphinView(const QUrl& url
      connect(controller, &KItemListController::escapePressed, this, &DolphinView::stopLoading);
      connect(controller, &KItemListController::modelChanged, this, &DolphinView::slotModelChanged);
      connect(controller, &KItemListController::selectedItemTextPressed, this, &DolphinView::slotSelectedItemTextPressed);
@@ -841,7 +859,7 @@
  
      connect(m_model, &KFileItemModel::directoryLoadingStarted,       this, &DolphinView::slotDirectoryLoadingStarted);
      connect(m_model, &KFileItemModel::directoryLoadingCompleted,     this, &DolphinView::slotDirectoryLoadingCompleted);
-@@ -349,6 +350,15 @@ KFileItemList DolphinView::selectedItems
+@@ -342,6 +343,15 @@ KFileItemList DolphinView::selectedItems
      return selectedItems;
  }
  
@@ -857,8 +875,9 @@
  int DolphinView::selectedItemsCount() const
  {
      const KItemListSelectionManager* selectionManager = m_container->controller()->selectionManager();
---- dolphin-17.11.90/src/views/dolphinview.h.0000~	2017-11-30 22:16:12.000000000 +0100
-+++ dolphin-17.11.90/src/views/dolphinview.h	2017-12-01 18:01:24.080533771 +0100
+diff -up dolphin-18.04.2/src/views/dolphinview.h.0000~ dolphin-18.04.2/src/views/dolphinview.h
+--- dolphin-18.04.2/src/views/dolphinview.h.0000~	2018-06-03 13:08:51.000000000 +0200
++++ dolphin-18.04.2/src/views/dolphinview.h	2018-06-07 15:12:03.455819684 +0200
 @@ -296,6 +296,8 @@ public:
       */
      void setViewPropertiesContext(const QString& context);
