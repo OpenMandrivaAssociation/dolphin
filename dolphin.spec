@@ -15,14 +15,13 @@ Source0:	http://download.kde.org/%{ftpdir}/applications/%{version}/src/%{name}-%
 URL:		https://www.kde.org/
 # (tpg) Patch from Rosa https://abf.rosalinux.ru/import/plasma5-dolphin/commit/8d7cd84c80ed66937f5cedcba38fd66484e68b93
 Patch0:		dolphin-15.08.1-klook.patch
-BuildRequires:	pkgconfig(Qt5Core)
-BuildRequires:	pkgconfig(Qt5Concurrent)
-BuildRequires:	pkgconfig(Qt5Widgets)
-BuildRequires:	pkgconfig(Qt5Gui)
-BuildRequires:	pkgconfig(Qt5DBus)
-BuildRequires:	pkgconfig(Qt5Test)
-
 BuildRequires:	cmake(ECM)
+BuildRequires:	cmake(Qt5Core)
+BuildRequires:	cmake(Qt5Concurrent)
+BuildRequires:	cmake(Qt5Widgets)
+BuildRequires:	cmake(Qt5Gui)
+BuildRequires:	cmake(Qt5DBus)
+BuildRequires:	cmake(Qt5Test)
 BuildRequires:	cmake(KF5DocTools)
 BuildRequires:	cmake(KF5Init)
 BuildRequires:	cmake(KF5KCMUtils)
@@ -33,23 +32,18 @@ BuildRequires:	cmake(KF5DBusAddons)
 BuildRequires:	cmake(KF5Bookmarks)
 BuildRequires:	cmake(KF5Config)
 BuildRequires:	cmake(KF5KIO)
+BuildRequires:	cmake(KF5Parts)
 BuildRequires:	cmake(KF5Solid)
 BuildRequires:	cmake(KF5IconThemes)
 BuildRequires:	cmake(KF5Completion)
-BuildRequires:	cmake(KF5Parts)
-BuildRequires:	cmake(KF5TextEditor)
-BuildRequires:	cmake(KF5WindowSystem)
+BuildRequires:	cmake(KF5TextWidgets)
 BuildRequires:	cmake(KF5Notifications)
-BuildRequires:	cmake(KF5XmlGui)
-BuildRequires:	cmake(KF5Attica)
+BuildRequires:	cmake(KF5Crash)
 BuildRequires:	cmake(Phonon4Qt5)
-
-BuildRequires:	cmake(KF5Activities)
 BuildRequires:	cmake(KF5Baloo)
 BuildRequires:	cmake(KF5BalooWidgets)
 BuildRequires:	cmake(KF5FileMetaData)
 BuildRequires:	cmake(KF5KDELibs4Support)
-
 BuildRequires:	libxml2-utils
 BuildRequires:	docbook-dtds
 BuildRequires:	docbook-style-xsl
