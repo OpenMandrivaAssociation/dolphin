@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	 18.08.3
+Version:	 18.11.80
 Epoch:		1
 Release:	1
 License:	GPLv2+
@@ -13,8 +13,6 @@ Group:		Graphical desktop/KDE
 %endif
 Source0:	http://download.kde.org/%{ftpdir}/applications/%{version}/src/%{name}-%{version}.tar.xz
 URL:		https://www.kde.org/
-# (tpg) Patch from Rosa https://abf.rosalinux.ru/import/plasma5-dolphin/commit/8d7cd84c80ed66937f5cedcba38fd66484e68b93
-Patch0:		dolphin-15.08.1-klook.patch
 BuildRequires:	cmake(ECM)
 BuildRequires:	cmake(Qt5Core)
 BuildRequires:	cmake(Qt5Concurrent)
@@ -67,6 +65,7 @@ manager. This approach allows to optimize the user interface for the task
 of file management.
 
 %files -f %{name}.translations
+%{_sysconfdir}/xdg/*.categories
 %_bindir/dolphin
 %_bindir/servicemenudeinstallation
 %_bindir/servicemenuinstallation
