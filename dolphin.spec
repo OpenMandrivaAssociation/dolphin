@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	19.04.3
+Version:	19.07.80
 Epoch:		1
 Release:	1
 License:	GPLv2+
@@ -22,6 +22,7 @@ BuildRequires:	cmake(Qt5Gui)
 BuildRequires:	cmake(Qt5DBus)
 BuildRequires:	cmake(Qt5Test)
 BuildRequires:	cmake(KF5DocTools)
+BuildRequires:	cmake(KF5Activities)
 BuildRequires:	cmake(KF5Init)
 BuildRequires:	cmake(KF5KCMUtils)
 BuildRequires:	cmake(KF5NewStuff)
@@ -46,6 +47,7 @@ BuildRequires:	cmake(KF5KDELibs4Support)
 BuildRequires:	libxml2-utils
 BuildRequires:	docbook-dtds
 BuildRequires:	docbook-style-xsl
+BuildRequires:	rubygem-test-unit
 BuildRequires:	ninja
 
 %description
@@ -66,10 +68,9 @@ manager. This approach allows to optimize the user interface for the task
 of file management.
 
 %files -f %{name}.translations
-%{_sysconfdir}/xdg/*.categories
+%_datadir/qlogging-categories5/*.categories
 %_bindir/dolphin
-%_bindir/servicemenudeinstallation
-%_bindir/servicemenuinstallation
+%_bindir/servicemenuinstaller
 %_sysconfdir/xdg/servicemenu.knsrc
 %_libdir/libkdeinit5_dolphin.so
 %_qt5_plugindir/*.so
@@ -78,6 +79,7 @@ of file management.
 %_datadir/metainfo/org.kde.dolphin.appdata.xml
 %_datadir/dbus-1/interfaces/org.freedesktop.FileManager1.xml
 %_datadir/dbus-1/services/org.kde.dolphin.FileManager1.service
+%_datadir/kglobalaccel/org.kde.dolphin.desktop
 %_kde5_services/*.desktop
 %_kde5_servicetypes/fileviewversioncontrolplugin.desktop
 %lang(fi) %{_datadir}/locale/fi/LC_SCRIPTS/dolphin
