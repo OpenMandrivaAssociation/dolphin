@@ -1,7 +1,7 @@
-diff -Naur dolphin-18.08.0/src/main.cpp dolphin-18.08.0-p/src/main.cpp
---- dolphin-18.08.0/src/main.cpp	2018-08-06 22:41:40.000000000 +0200
-+++ dolphin-18.08.0-p/src/main.cpp	2018-08-20 12:47:05.819866374 +0200
-@@ -42,18 +42,6 @@
+diff -up dolphin-19.11.80/src/main.cpp.1~ dolphin-19.11.80/src/main.cpp
+--- dolphin-19.11.80/src/main.cpp.1~	2019-11-16 22:12:47.730131351 +0100
++++ dolphin-19.11.80/src/main.cpp	2019-11-17 22:40:42.780609480 +0100
+@@ -46,19 +46,6 @@
  
  extern "C" Q_DECL_EXPORT int kdemain(int argc, char **argv)
  {
@@ -17,6 +17,7 @@ diff -Naur dolphin-18.08.0/src/main.cpp dolphin-18.08.0-p/src/main.cpp
 -        }
 -    }
 -#endif
- 
-     QApplication app(argc, argv);
-     app.setAttribute(Qt::AA_UseHighDpiPixmaps, true);
+-
+     /**
+      * enable high dpi support
+      */
