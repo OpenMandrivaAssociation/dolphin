@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	19.11.90
+Version:	19.12.0
 Epoch:		1
 Release:	1
 License:	GPLv2+
@@ -11,7 +11,7 @@ Group:		Graphical desktop/KDE
 %else
 %define ftpdir stable
 %endif
-Source0:	http://download.kde.org/%{ftpdir}/applications/%{version}/src/%{name}-%{version}.tar.xz
+Source0:	http://download.kde.org/%{ftpdir}/release-service/%{version}/src/%{name}-%{version}.tar.xz
 Patch0:		https://gitweb.frugalware.org/frugalware-current/raw/master/source/kde5/dolphin/allow-root.patch
 URL:		https://www.kde.org/
 BuildRequires:	cmake(ECM)
