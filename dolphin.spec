@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	19.12.3
+Version:	20.03.80
 Epoch:		1
 Release:	1
 License:	GPLv2+
@@ -47,7 +47,7 @@ BuildRequires:	cmake(KF5KDELibs4Support)
 BuildRequires:	libxml2-utils
 BuildRequires:	docbook-dtds
 BuildRequires:	docbook-style-xsl
-BuildRequires:	rubygem-test-unit
+BuildRequires:	ruby
 BuildRequires:	ninja
 
 %description
