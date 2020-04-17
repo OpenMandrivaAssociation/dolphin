@@ -1,8 +1,8 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	20.03.90
+Version:	20.04.0
 Epoch:		1
-Release:	2
+Release:	1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 %define is_beta %(if test `echo %{version} |cut -d. -f3` -ge 70; then echo -n 1; else echo -n 0; fi)
@@ -13,7 +13,6 @@ Group:		Graphical desktop/KDE
 %endif
 Source0:	http://download.kde.org/%{ftpdir}/release-service/%{version}/src/%{name}-%{version}.tar.xz
 Patch0:		https://gitweb.frugalware.org/frugalware-current/raw/master/source/kde5/dolphin/allow-root.patch
-Patch1:		dolphin-20.03.90-qt-5.15.patch
 URL:		https://www.kde.org/
 BuildRequires:	cmake(ECM)
 BuildRequires:	cmake(Qt5Core)
