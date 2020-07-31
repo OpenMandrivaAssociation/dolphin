@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	20.07.80
+Version:	20.07.90
 Epoch:		1
 Release:	1
 License:	GPLv2+
@@ -71,11 +71,11 @@ of file management.
 %_datadir/qlogging-categories5/*.categories
 %_bindir/dolphin
 %_bindir/servicemenuinstaller
-%_sysconfdir/xdg/servicemenu.knsrc
 %_libdir/libkdeinit5_dolphin.so
 %_qt5_plugindir/*.so
 %_datadir/applications/org.kde.dolphin.desktop
 %_datadir/config.kcfg/*.kcfg
+%_datadir/knsrcfiles/servicemenu.knsrc
 %_datadir/metainfo/org.kde.dolphin.appdata.xml
 %_datadir/dbus-1/interfaces/org.freedesktop.FileManager1.xml
 %_datadir/dbus-1/services/org.kde.dolphin.FileManager1.service
