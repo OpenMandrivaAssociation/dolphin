@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	20.08.3
+Version:	20.11.80
 Epoch:		1
 Release:	1
 License:	GPLv2+
