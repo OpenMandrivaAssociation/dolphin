@@ -2,7 +2,7 @@ Summary:	File manager for KDE focusing on usability
 Name:		dolphin
 Version:	20.12.1
 Epoch:		1
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 %define is_beta %(if test `echo %{version} |cut -d. -f3` -ge 70; then echo -n 1; else echo -n 0; fi)
@@ -44,6 +44,8 @@ BuildRequires:	cmake(KF5Baloo)
 BuildRequires:	cmake(KF5BalooWidgets)
 BuildRequires:	cmake(KF5FileMetaData)
 BuildRequires:	cmake(KF5KDELibs4Support)
+BuildRequires:	cmake(KUserFeedback)
+cmake(packagekitqt5)
 BuildRequires:	libxml2-utils
 BuildRequires:	docbook-dtds
 BuildRequires:	docbook-style-xsl
