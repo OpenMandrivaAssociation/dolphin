@@ -45,7 +45,7 @@ BuildRequires:	cmake(KF5BalooWidgets)
 BuildRequires:	cmake(KF5FileMetaData)
 BuildRequires:	cmake(KF5KDELibs4Support)
 BuildRequires:	cmake(KUserFeedback)
-cmake(packagekitqt5)
+BuildRequires:	cmake(packagekitqt5)
 BuildRequires:	libxml2-utils
 BuildRequires:	docbook-dtds
 BuildRequires:	docbook-style-xsl
