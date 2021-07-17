@@ -1,9 +1,9 @@
-diff -up dolphin-19.11.80/src/main.cpp.1~ dolphin-19.11.80/src/main.cpp
---- dolphin-19.11.80/src/main.cpp.1~	2019-11-16 22:12:47.730131351 +0100
-+++ dolphin-19.11.80/src/main.cpp	2019-11-17 22:40:42.780609480 +0100
-@@ -46,19 +46,6 @@
+diff -up dolphin-21.07.80/src/main.cpp.1~ dolphin-21.07.80/src/main.cpp
+--- dolphin-21.07.80/src/main.cpp.1~	2021-07-17 03:30:22.104570478 +0200
++++ dolphin-21.07.80/src/main.cpp	2021-07-17 03:31:01.852154051 +0200
+@@ -39,19 +39,6 @@
  
- extern "C" Q_DECL_EXPORT int kdemain(int argc, char **argv)
+ int main(int argc, char **argv)
  {
 -#ifndef Q_OS_WIN
 -    // Prohibit using sudo or kdesu (but allow using the root user directly)
