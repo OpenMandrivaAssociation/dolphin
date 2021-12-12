@@ -1,6 +1,6 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	21.08.3
+Version:	21.12.0
 Epoch:		1
 Release:	1
 License:	GPLv2+
@@ -75,7 +75,6 @@ of file management.
 %_datadir/qlogging-categories5/*.categories
 %_bindir/dolphin
 %_bindir/servicemenuinstaller
-%_qt5_plugindir/*.so
 %_datadir/applications/org.kde.dolphin.desktop
 %_datadir/config.kcfg/*.kcfg
 %_datadir/knsrcfiles/servicemenu.knsrc
@@ -87,6 +86,7 @@ of file management.
 %_kde5_servicetypes/fileviewversioncontrolplugin.desktop
 %_prefix/lib/systemd/user/plasma-dolphin.service
 %_libdir/qt5/plugins/kf5/parts/dolphinpart.so
+%_libdir/qt5/plugins/dolphin/kcms
 %lang(fi) %{_datadir}/locale/fi/LC_SCRIPTS/dolphin
 
 #--------------------------------------------------------------------
