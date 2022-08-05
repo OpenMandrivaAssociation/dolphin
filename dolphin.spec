@@ -1,8 +1,8 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	22.04.2
+Version:	22.07.90
 Epoch:		1
-Release:	2
+Release:	1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 %define is_beta %(if test `echo %{version} |cut -d. -f3` -ge 70; then echo -n 1; else echo -n 0; fi)
@@ -82,6 +82,7 @@ of file management.
 %_datadir/dbus-1/interfaces/org.freedesktop.FileManager1.xml
 %_datadir/dbus-1/services/org.kde.dolphin.FileManager1.service
 %_datadir/kglobalaccel/org.kde.dolphin.desktop
+%_datadir/kconf_update/*
 %_kde5_services/*.desktop
 %_kde5_servicetypes/fileviewversioncontrolplugin.desktop
 %_prefix/lib/systemd/user/plasma-dolphin.service
@@ -148,7 +149,6 @@ This package contains header files needed if you wish to build applications
 based on %{name}.
 
 %files devel
-%exclude %_libdir/libkdeinit5_dolphin.so
 %_includedir/Dolphin
 %_includedir/dolphin_export.h
 %_includedir/dolphinvcs_export.h
