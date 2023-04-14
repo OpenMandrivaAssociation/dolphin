@@ -1,29 +1,12 @@
-diff -up dolphin-22.03.80/src/main.cpp.1~ dolphin-22.03.80/src/main.cpp
---- dolphin-22.03.80/src/main.cpp.1~	2022-03-21 09:38:30.360096118 +0100
-+++ dolphin-22.03.80/src/main.cpp	2022-03-21 10:00:28.496989295 +0100
-@@ -40,25 +40,6 @@
+diff -up dolphin-23.03.90/src/main.cpp.1~ dolphin-23.03.90/src/main.cpp
+--- dolphin-23.03.90/src/main.cpp.1~	2023-04-14 17:20:49.467138449 +0200
++++ dolphin-23.03.90/src/main.cpp	2023-04-14 17:33:10.105882557 +0200
+@@ -50,7 +50,7 @@
  
  int main(int argc, char **argv)
  {
 -#ifndef Q_OS_WIN
--    // Prohibit using sudo or kdesu (but allow using the root user directly)
--    if (getuid() == 0) {
--        if (!qEnvironmentVariableIsEmpty("SUDO_USER")) {
--            std::cout << "Running Dolphin with sudo can cause bugs and expose you to security vulnerabilities. "
--                         "Instead use Dolphin normally and you will be prompted for elevated privileges when "
--                         "performing file operations that require them."
--                      << std::endl;
--            return EXIT_FAILURE;
--        } else if (!qEnvironmentVariableIsEmpty("KDESU_USER")) {
--            std::cout << "Running Dolphin with kdesu can cause bugs and expose you to security vulnerabilities. "
--                         "Instead use Dolphin normally and you will be prompted for elevated privileges when "
--                         "performing file operations that require them."
--                      << std::endl;
--            return EXIT_FAILURE;
--        }
--    }
--#endif
--
-     /**
-      * enable high dpi support
-      */
++#if 0 //ndef Q_OS_WIN
+     // Prohibit using sudo or kdesu (but allow using the root user directly)
+     if (getuid() == 0) {
+         if (!qEnvironmentVariableIsEmpty("SUDO_USER")) {

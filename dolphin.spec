@@ -1,8 +1,8 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	22.12.3
+Version:	23.03.90
 Epoch:		1
-Release:	2
+Release:	1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 %define is_beta %(if test `echo %{version} |cut -d. -f3` -ge 70; then echo -n 1; else echo -n 0; fi)
@@ -52,6 +52,7 @@ BuildRequires:	docbook-dtds
 BuildRequires:	docbook-style-xsl
 BuildRequires:	ruby
 BuildRequires:	ninja
+BuildRequires:	zsh
 Recommends:	kio-fuse
 
 %description
@@ -87,6 +88,7 @@ of file management.
 %_prefix/lib/systemd/user/plasma-dolphin.service
 %_libdir/qt5/plugins/kf5/parts/dolphinpart.so
 %_libdir/qt5/plugins/dolphin/kcms
+%{_datadir}/zsh/site-functions/_dolphin
 %lang(fi) %{_datadir}/locale/fi/LC_SCRIPTS/dolphin
 
 #--------------------------------------------------------------------
