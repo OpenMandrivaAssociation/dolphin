@@ -56,7 +56,7 @@ BuildRequires:	docbook-style-xsl
 BuildRequires:	ruby
 BuildRequires:	ninja
 BuildRequires:	zsh
-Recommends:	kio-fuse
+BuildRequires:	plasma6-xdg-desktop-portal-kde
 
 %description
 Dolphin is a file manager for KDE focusing on usability.
