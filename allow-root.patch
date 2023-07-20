@@ -1,0 +1,12 @@
+diff -up dolphin-23.03.90/src/main.cpp.1~ dolphin-23.03.90/src/main.cpp
+--- dolphin-23.03.90/src/main.cpp.1~	2023-04-14 17:20:49.467138449 +0200
++++ dolphin-23.03.90/src/main.cpp	2023-04-14 17:33:10.105882557 +0200
+@@ -50,7 +50,7 @@
+ 
+ int main(int argc, char **argv)
+ {
+-#ifndef Q_OS_WIN
++#if 0 //ndef Q_OS_WIN
+     // Prohibit using sudo or kdesu (but allow using the root user directly)
+     if (getuid() == 0) {
+         if (!qEnvironmentVariableIsEmpty("SUDO_USER")) {
