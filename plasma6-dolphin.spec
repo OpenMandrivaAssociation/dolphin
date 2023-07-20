@@ -22,6 +22,7 @@ Patch0:		https://gitweb.frugalware.org/frugalware-current/raw/master/source/kde5
 Patch1:		dolphin-21.03.80-show-copyto-moveto-by-default.patch
 URL:		https://www.kde.org/
 BuildRequires:	cmake(ECM)
+BuildRequires:	cmake(Qt6)
 BuildRequires:	cmake(Qt6Core)
 BuildRequires:	cmake(Qt6Concurrent)
 BuildRequires:	cmake(Qt6Widgets)
