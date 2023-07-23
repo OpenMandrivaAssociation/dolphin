@@ -1,0 +1,55 @@
+From a10e36b135da48927b3b78355c1fafb5d5292dc9 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@lindev.ch>
+Date: Sun, 23 Jul 2023 13:07:44 +0200
+Subject: [PATCH] Fix build with current KF6 KIO
+
+Commit 57c6cc875f47057255ccb52891a24e0e518aa62c in KIO changes the API
+of KIO::FileSystemFreeSpaceJob.
+
+Adapt dolphin code using it to the new API.
+---
+ src/statusbar/mountpointobserver.cpp | 10 ++++++----
+ src/statusbar/mountpointobserver.h   |  2 +-
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/src/statusbar/mountpointobserver.cpp b/src/statusbar/mountpointobserver.cpp
+index 660484e60d..a1745e033e 100644
+--- a/src/statusbar/mountpointobserver.cpp
++++ b/src/statusbar/mountpointobserver.cpp
+@@ -29,14 +29,16 @@ void MountPointObserver::update()
+         delete this;
+     } else {
+         KIO::FileSystemFreeSpaceJob *job = KIO::fileSystemFreeSpace(m_url);
+-        connect(job, &KIO::FileSystemFreeSpaceJob::result, this, &MountPointObserver::freeSpaceResult);
++        connect(job, &KJob::result, this, &MountPointObserver::freeSpaceResult);
+     }
+ }
+ 
+-void MountPointObserver::freeSpaceResult(KIO::Job *job, KIO::filesize_t size, KIO::filesize_t available)
++void MountPointObserver::freeSpaceResult(KJob *job)
+ {
+-    if (!job->error()) {
+-        Q_EMIT spaceInfoChanged(size, available);
++    const auto fsjob = qobject_cast<KIO::FileSystemFreeSpaceJob*>(job);
++    Q_ASSERT(fsjob);
++    if (!fsjob->error()) {
++        Q_EMIT spaceInfoChanged(fsjob->size(), fsjob->availableSize());
+     } else {
+         Q_EMIT spaceInfoChanged(0, 0);
+     }
+diff --git a/src/statusbar/mountpointobserver.h b/src/statusbar/mountpointobserver.h
+index d26a0e7dea..4d1362cdb8 100644
+--- a/src/statusbar/mountpointobserver.h
++++ b/src/statusbar/mountpointobserver.h
+@@ -87,7 +87,7 @@ public Q_SLOTS:
+     void update();
+ 
+ private Q_SLOTS:
+-    void freeSpaceResult(KIO::Job *job, KIO::filesize_t size, KIO::filesize_t available);
++    void freeSpaceResult(KJob *job);
+ 
+ private:
+     const QUrl m_url;
+-- 
+GitLab
+
