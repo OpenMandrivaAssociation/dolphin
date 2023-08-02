@@ -1,5 +1,5 @@
 %define stable %([ "`echo %{version} |cut -d. -f3`" -ge 80 ] && echo -n un; echo -n stable)
-%define git 20230726
+%define git 20230802
 
 Summary:	File manager for KDE focusing on usability
 Name:		plasma6-dolphin
@@ -20,7 +20,6 @@ Source0:	http://download.kde.org/%{ftpdir}/release-service/%{version}/src/%{name
 %endif
 Patch0:		https://gitweb.frugalware.org/frugalware-current/raw/master/source/kde5/dolphin/allow-root.patch
 Patch1:		dolphin-21.03.80-show-copyto-moveto-by-default.patch
-Patch2:		https://invent.kde.org/system/dolphin/-/merge_requests/575.patch
 URL:		https://www.kde.org/
 BuildRequires:	cmake(ECM)
 BuildRequires:	cmake(Qt6)
