@@ -1,5 +1,5 @@
 %define stable %([ "`echo %{version} |cut -d. -f3`" -ge 80 ] && echo -n un; echo -n stable)
-%define git 20230825
+%define git 20230902
 
 Summary:	File manager for KDE focusing on usability
 Name:		plasma6-dolphin
