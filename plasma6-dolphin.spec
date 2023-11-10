@@ -1,22 +1,16 @@
-%define stable %([ "`echo %{version} |cut -d. -f3`" -ge 80 ] && echo -n un; echo -n stable)
-%define git 20231104
+%define stable %([ "$(echo %{version} |cut -d. -f2)" -ge 70 -o "$(echo %{version} |cut -d. -f3)" -ge 70 ] && echo -n un; echo -n stable)
+#define git 20231104
 
 Summary:	File manager for KDE focusing on usability
 Name:		plasma6-dolphin
-Version:	23.05.90
+Version:	24.01.75
 Release:	%{?git:0.%{git}.}1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
-%define is_beta %(if test `echo %{version} |cut -d. -f3` -ge 70; then echo -n 1; else echo -n 0; fi)
-%if %{is_beta}
-%define ftpdir unstable
-%else
-%define ftpdir stable
-%endif
 %if 0%{?git:1}
 Source0:	https://invent.kde.org/system/dolphin/-/archive/kf6/dolphin-kf6.tar.bz2#/dolphin-%{git}.tar.bz2
 %else
-Source0:	http://download.kde.org/%{ftpdir}/release-service/%{version}/src/%{name}-%{version}.tar.xz
+Source0:	http://download.kde.org/%{stable}/release-service/%{version}/src/dolphin-%{version}.tar.xz
 %endif
 Patch0:		https://gitweb.frugalware.org/frugalware-current/raw/master/source/kde5/dolphin/allow-root.patch
 Patch1:		dolphin-21.03.80-show-copyto-moveto-by-default.patch
@@ -93,7 +87,6 @@ of file management.
 %{_datadir}/dolphin
 %_prefix/lib/systemd/user/plasma-dolphin.service
 %{_datadir}/zsh/site-functions/_dolphin
-%lang(fi) %{_datadir}/locale/fi/LC_SCRIPTS/dolphin
 
 #--------------------------------------------------------------------
 
@@ -121,7 +114,7 @@ Dolphin Library.
 
 %files -n %{libdolphinprivate}
 %_libdir/libdolphinprivate.so.%{dolphinprivate_major}*
-%_libdir/libdolphinprivate.so.23*
+%_libdir/libdolphinprivate.so.24*
 
 #--------------------------------------------------------------------
 
@@ -138,7 +131,7 @@ Dolphin Library.
 
 %files -n %{libdolphinvcs}
 %_libdir/libdolphinvcs.so.%{dolphinvcs_major}*
-%_libdir/libdolphinvcs.so.23*
+%_libdir/libdolphinvcs.so.24*
 
 #--------------------------------------------------------------------
 
