@@ -3,7 +3,7 @@
 
 Summary:	File manager for KDE focusing on usability
 Name:		plasma6-dolphin
-Version:	24.01.75
+Version:	24.01.80
 Release:	%{?git:0.%{git}.}1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
@@ -24,7 +24,7 @@ BuildRequires:	cmake(Qt6Gui)
 BuildRequires:	cmake(Qt6DBus)
 BuildRequires:	cmake(Qt6Test)
 BuildRequires:	cmake(KF6DocTools)
-BuildRequires:	cmake(KF6Activities)
+BuildRequires:	cmake(PlasmaActivities)
 BuildRequires:	cmake(KF6KCMUtils)
 BuildRequires:	cmake(KF6NewStuff)
 BuildRequires:	cmake(KF6CoreAddons)
@@ -45,6 +45,8 @@ BuildRequires:	cmake(Phonon4Qt6)
 BuildRequires:	cmake(KF6Baloo)
 BuildRequires:	cmake(KF6FileMetaData)
 BuildRequires:	cmake(packagekitqt6)
+BuildRequires:	cmake(KF6UserFeedback)
+BuildRequires:	%mklibname -d KF6UserFeedbackWidgets
 BuildRequires:	libxml2-utils
 BuildRequires:	docbook-dtds
 BuildRequires:	docbook-style-xsl
