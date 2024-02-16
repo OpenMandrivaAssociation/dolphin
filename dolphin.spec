@@ -1,8 +1,8 @@
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	23.08.4
+Version:	23.08.5
 Epoch:		1
-Release:	3
+Release:	1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 %define is_beta %(if test `echo %{version} |cut -d. -f3` -ge 70; then echo -n 1; else echo -n 0; fi)
