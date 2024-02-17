@@ -1,18 +1,20 @@
 %define stable %([ "$(echo %{version} |cut -d. -f2)" -ge 70 -o "$(echo %{version} |cut -d. -f3)" -ge 70 ] && echo -n un; echo -n stable)
-#define git 20231104
+%define git 20240217
+%define gitbranch release/24.02
+%define gitbranchd %(echo %{gitbranch} |sed -e "s,/,-,g")
 
 Summary:	File manager for KDE focusing on usability
 Name:		plasma6-dolphin
-Version:	24.01.95
+Version:	24.01.96
 Release:	%{?git:0.%{git}.}1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 %if 0%{?git:1}
-Source0:	https://invent.kde.org/system/dolphin/-/archive/kf6/dolphin-kf6.tar.bz2#/dolphin-%{git}.tar.bz2
+Source0:	https://invent.kde.org/system/dolphin/-/archive/%{gitbranch}/dolphin-%{gitbranchd}.tar.bz2#/dolphin-%{git}.tar.bz2
 %else
 Source0:	http://download.kde.org/%{stable}/release-service/%{version}/src/dolphin-%{version}.tar.xz
 %endif
-Patch0:		https://gitweb.frugalware.org/frugalware-current/raw/master/source/kde5/dolphin/allow-root.patch
+Patch0:		https://gitweb.frugalware.org/frugalware-current/raw/%{gitbranchd}/source/kde5/dolphin/allow-root.patch
 Patch1:		dolphin-21.03.80-show-copyto-moveto-by-default.patch
 URL:		https://www.kde.org/
 BuildRequires:	cmake(ECM)
@@ -87,8 +89,9 @@ of file management.
 %_datadir/kglobalaccel/org.kde.dolphin.desktop
 %_datadir/kconf_update/*
 %{_datadir}/dolphin
-%_prefix/lib/systemd/user/plasma-dolphin.service
+%{_prefix}/lib/systemd/user/plasma-dolphin.service
 %{_datadir}/zsh/site-functions/_dolphin
+%{_datadir}/icons/hicolor/scalable/apps/org.kde.dolphin.svg
 
 #--------------------------------------------------------------------
 
@@ -160,7 +163,7 @@ based on %{name}.
 #--------------------------------------------------------------------
 
 %prep
-%autosetup -p1 -n dolphin-%{?git:kf6}%{!?git:%{version}}
+%autosetup -p1 -n dolphin-%{?git:%{gitbranchd}}%{!?git:%{version}}
 %cmake \
 	-DKDE_INSTALL_USE_QT_SYS_PATHS:BOOL=ON \
 	-G Ninja
