@@ -5,8 +5,8 @@
 
 Summary:	File manager for KDE focusing on usability
 Name:		plasma6-dolphin
-Version:	24.02.0
-Release:	%{?git:0.%{git}.}3
+Version:	24.02.1
+Release:	%{?git:0.%{git}.}1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 %if 0%{?git:1}
@@ -16,8 +16,6 @@ Source0:	http://download.kde.org/%{stable}/release-service/%{version}/src/dolphi
 %endif
 Patch0:		https://gitweb.frugalware.org/frugalware-current/raw/%{gitbranchd}/source/kde5/dolphin/allow-root.patch
 Patch1:		dolphin-21.03.80-show-copyto-moveto-by-default.patch
-# https://bugs.kde.org/show_bug.cgi?id=481952
-Patch2:		https://invent.kde.org/system/dolphin/-/commit/4dc9510a2a8ceb35503cc7e81c2024774491ce8a.patch
 URL:		https://www.kde.org/
 BuildRequires:	cmake(ECM)
 BuildRequires:	cmake(Qt6)
