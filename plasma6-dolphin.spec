@@ -5,7 +5,7 @@
 
 Summary:	File manager for KDE focusing on usability
 Name:		plasma6-dolphin
-Version:	24.05.2
+Version:	24.08.0
 Release:	%{?git:0.%{git}.}1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
@@ -93,6 +93,8 @@ of file management.
 %{_prefix}/lib/systemd/user/plasma-dolphin.service
 %{_datadir}/zsh/site-functions/_dolphin
 %{_datadir}/icons/hicolor/scalable/apps/org.kde.dolphin.svg
+%dir %{_qtdir}/plugins/kf6/kfileitemaction
+%{_qtdir}/plugins/kf6/kfileitemaction/movetonewfolderitemaction.so
 
 #--------------------------------------------------------------------
 
