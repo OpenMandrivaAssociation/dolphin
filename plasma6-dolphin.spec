@@ -6,7 +6,7 @@
 Summary:	File manager for KDE focusing on usability
 Name:		plasma6-dolphin
 Version:	24.08.0
-Release:	%{?git:0.%{git}.}1
+Release:	%{?git:0.%{git}.}2
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 %if 0%{?git:1}
@@ -16,6 +16,9 @@ Source0:	http://download.kde.org/%{stable}/release-service/%{version}/src/dolphi
 %endif
 Patch0:		https://gitweb.frugalware.org/frugalware-current/raw/%{gitbranchd}/source/kde5/dolphin/allow-root.patch
 Patch1:		dolphin-21.03.80-show-copyto-moveto-by-default.patch
+# Revert https://invent.kde.org/system/dolphin/-/commit/122fee5625f0285ec4ebda79162c72390989eb2a.patch
+# It makes the UI less consistent for the sake of making it idiot friendly. This isn't GNOME.
+Patch2:		revert-122fee5625f0285ec4ebda79162c72390989eb2a.patch
 URL:		https://www.kde.org/
 BuildRequires:	cmake(ECM)
 BuildRequires:	cmake(Qt6)
