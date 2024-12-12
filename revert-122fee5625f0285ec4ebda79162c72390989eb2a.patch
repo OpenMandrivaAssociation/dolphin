@@ -44,25 +44,23 @@ BUG: 424723
  src/tests/kitemlistcontrollertest.cpp  |  7 ++++
  4 files changed, 69 insertions(+), 9 deletions(-)
 
-diff --git a/src/dolphinviewcontainer.cpp b/src/dolphinviewcontainer.cpp
-index ef58abee0e..6eff70f9be 100644
---- a/src/dolphinviewcontainer.cpp
-+++ b/src/dolphinviewcontainer.cpp
-@@ -868,8 +868,7 @@ void DolphinViewContainer::slotUrlNavigatorLocationChanged(const QUrl &url)
+diff -up dolphin-24.12.0/src/dolphinviewcontainer.cpp.3~ dolphin-24.12.0/src/dolphinviewcontainer.cpp
+--- dolphin-24.12.0/src/dolphinviewcontainer.cpp.3~	2024-12-03 04:15:16.000000000 +0100
++++ dolphin-24.12.0/src/dolphinviewcontainer.cpp	2024-12-12 16:32:28.618822812 +0100
+@@ -868,8 +868,7 @@ void DolphinViewContainer::slotUrlNaviga
  
  void DolphinViewContainer::slotUrlSelectionRequested(const QUrl &url)
  {
-+    m_view->markUrlsAsSelected({url});
 -    // We do not want to select any item here because there is no reason to assume that the user wants to edit the folder we are emerging from. BUG: 424723
 -
++    m_view->markUrlsAsSelected({url});
      m_view->markUrlAsCurrent(url); // makes the item scroll into view
  }
  
-diff --git a/src/kitemviews/kitemlistcontroller.cpp b/src/kitemviews/kitemlistcontroller.cpp
-index b25c73843c..392dc410e6 100644
---- a/src/kitemviews/kitemlistcontroller.cpp
-+++ b/src/kitemviews/kitemlistcontroller.cpp
-@@ -723,9 +723,6 @@ bool KItemListController::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event,
+diff -up dolphin-24.12.0/src/kitemviews/kitemlistcontroller.cpp.3~ dolphin-24.12.0/src/kitemviews/kitemlistcontroller.cpp
+--- dolphin-24.12.0/src/kitemviews/kitemlistcontroller.cpp.3~	2024-12-03 04:15:16.000000000 +0100
++++ dolphin-24.12.0/src/kitemviews/kitemlistcontroller.cpp	2024-12-12 16:32:28.618966964 +0100
+@@ -738,9 +738,6 @@ bool KItemListController::mouseDoubleCli
  
      const bool emitItemActivated = index.has_value() && index.value() < m_model->count() && !m_view->isAboveExpansionToggle(index.value(), pos);
      if (emitItemActivated) {
@@ -72,13 +70,13 @@ index b25c73843c..392dc410e6 100644
          Q_EMIT itemActivated(index.value());
      }
      return false;
-@@ -1664,14 +1661,10 @@ bool KItemListController::onPress(const QPointF &pos, const Qt::KeyboardModifier
+@@ -1679,14 +1676,10 @@ bool KItemListController::onPress(const
                  // or we just keep going for double-click activation
                  if (m_view->style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick) || m_singleClickActivationEnforced) {
                      if (!pressedItemAlreadySelected) {
+-                        // An unselected item was clicked directly while deselecting multiple other items so we mark it "current".
 +                        // An unselected item was clicked directly while deselecting multiple other items so we select it.
 +                        m_selectionManager->setSelected(m_pressedIndex.value(), 1, KItemListSelectionManager::Toggle);
--                        // An unselected item was clicked directly while deselecting multiple other items so we mark it "current".
                          m_selectionManager->setCurrentItem(m_pressedIndex.value());
                          m_selectionManager->beginAnchoredSelection(m_pressedIndex.value());
 -                        if (!leftClick) {
@@ -89,34 +87,33 @@ index b25c73843c..392dc410e6 100644
                      }
                      return true; // event handled, don't create rubber band
                  }
-@@ -1738,10 +1731,7 @@ bool KItemListController::onPress(const QPointF &pos, const Qt::KeyboardModifier
+@@ -1753,10 +1746,7 @@ bool KItemListController::onPress(const
              break;
  
          case SingleSelection:
-+            m_selectionManager->setSelected(m_pressedIndex.value());
 -            if (!leftClick || shiftOrControlPressed
 -                || (!m_view->style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick) && !m_singleClickActivationEnforced)) {
 -                m_selectionManager->setSelected(m_pressedIndex.value());
 -            }
++            m_selectionManager->setSelected(m_pressedIndex.value());
              break;
  
          case MultiSelection:
-@@ -1762,10 +1752,7 @@ bool KItemListController::onPress(const QPointF &pos, const Qt::KeyboardModifier
+@@ -1777,10 +1767,7 @@ bool KItemListController::onPress(const
                  }
              } else if (!shiftPressed || !m_selectionManager->isAnchoredSelectionActive()) {
                  // Select the pressed item and start a new anchored selection
-+                m_selectionManager->setSelected(m_pressedIndex.value(), 1, KItemListSelectionManager::Select);
 -                if (!leftClick || shiftOrControlPressed
 -                    || (!m_view->style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick) && !m_singleClickActivationEnforced)) {
 -                    m_selectionManager->setSelected(m_pressedIndex.value(), 1, KItemListSelectionManager::Select);
 -                }
++                m_selectionManager->setSelected(m_pressedIndex.value(), 1, KItemListSelectionManager::Select);
                  m_selectionManager->beginAnchoredSelection(m_pressedIndex.value());
              }
              break;
-diff --git a/src/tests/dolphinmainwindowtest.cpp b/src/tests/dolphinmainwindowtest.cpp
-index f5ece564d3..2d90ae52f9 100644
---- a/src/tests/dolphinmainwindowtest.cpp
-+++ b/src/tests/dolphinmainwindowtest.cpp
+diff -up dolphin-24.12.0/src/tests/dolphinmainwindowtest.cpp.3~ dolphin-24.12.0/src/tests/dolphinmainwindowtest.cpp
+--- dolphin-24.12.0/src/tests/dolphinmainwindowtest.cpp.3~	2024-12-03 04:15:16.000000000 +0100
++++ dolphin-24.12.0/src/tests/dolphinmainwindowtest.cpp	2024-12-12 16:32:28.619108631 +0100
 @@ -9,10 +9,7 @@
  #include "dolphintabpage.h"
  #include "dolphintabwidget.h"
@@ -128,21 +125,19 @@ index f5ece564d3..2d90ae52f9 100644
  #include "testdir.h"
  
  #include <KActionCollection>
-@@ -363,7 +360,7 @@ void DolphinMainWindowTest::testGoActions()
+@@ -539,7 +536,7 @@ void DolphinMainWindowTest::testGoAction
      testDir->createDir("b/b-1");
      testDir->createFile("b/b-2");
      testDir->createDir("c");
-+    QUrl childDirUrl(QDir::cleanPath(testDir->url().toString() + "/b"));
 -    const QUrl childDirUrl(QDir::cleanPath(testDir->url().toString() + "/b"));
++    QUrl childDirUrl(QDir::cleanPath(testDir->url().toString() + "/b"));
      m_mainWindow->openDirectories({childDirUrl}, false); // Open "b" dir
      m_mainWindow->show();
      QVERIFY(QTest::qWaitForWindowExposed(m_mainWindow.data()));
-@@ -384,40 +381,24 @@ void DolphinMainWindowTest::testGoActions()
+@@ -560,40 +557,24 @@ void DolphinMainWindowTest::testGoAction
      const QUrl parentDirUrl = m_mainWindow->activeViewContainer()->url();
      QVERIFY(parentDirUrl != childDirUrl);
  
-+    // The item we just emerged from should now have keyboard focus but this doesn't necessarily mean that it is selected.
-+    // To test if it has keyboard focus, we press "Down" to select "c" below and then "Up" so the folder "b" we just emerged from is actually selected.
 -    auto currentItemUrl = [this]() {
 -        const int currentIndex = m_mainWindow->m_activeViewContainer->view()->m_container->controller()->selectionManager()->currentItem();
 -        const KFileItem currentItem = m_mainWindow->m_activeViewContainer->view()->m_model->fileItem(currentIndex);
@@ -153,6 +148,8 @@ index f5ece564d3..2d90ae52f9 100644
 -    QCOMPARE(m_mainWindow->m_activeViewContainer->view()->selectedItems().count(), 0); // The item we just emerged from should not be selected. BUG: 424723
 -    // Pressing arrow keys should not only move the keyboard focus but also select the item.
 -    // We press "Down" to select "c" below and then "Up" so the folder "b" we just emerged from is selected for the first time.
++    // The item we just emerged from should now have keyboard focus but this doesn't necessarily mean that it is selected.
++    // To test if it has keyboard focus, we press "Down" to select "c" below and then "Up" so the folder "b" we just emerged from is actually selected.
      m_mainWindow->actionCollection()->action(QStringLiteral("compact"))->trigger();
      QTest::keyClick(m_mainWindow->activeViewContainer()->view()->m_container, Qt::Key::Key_Down, Qt::NoModifier);
      QCOMPARE(m_mainWindow->m_activeViewContainer->view()->selectedItems().count(), 1);
@@ -167,8 +164,8 @@ index f5ece564d3..2d90ae52f9 100644
      QCOMPARE(m_mainWindow->activeViewContainer()->url(), childDirUrl);
      QVERIFY(m_mainWindow->isUrlOpen(childDirUrl.toString()));
  
-+    // Go back to the parent folder
 -    // Go back to the parent folder.
++    // Go back to the parent folder
      m_mainWindow->actionCollection()->action(KStandardAction::name(KStandardAction::Back))->trigger();
      QVERIFY(spyDirectoryLoadingCompleted.wait());
      QTest::qWait(100); // Somehow the item we emerged from doesn't have keyboard focus yet if we don't wait a split second.
@@ -181,7 +178,7 @@ index f5ece564d3..2d90ae52f9 100644
  
      // Open a new tab for the "b" child dir and verify that this doesn't interfere with anything.
      QTest::keyClick(m_mainWindow->activeViewContainer()->view()->m_container, Qt::Key::Key_Enter, Qt::ControlModifier); // Open new inactive tab
-@@ -431,26 +412,6 @@ void DolphinMainWindowTest::testGoActions()
+@@ -607,26 +588,6 @@ void DolphinMainWindowTest::testGoAction
      QVERIFY(spyDirectoryLoadingCompleted.wait());
      QCOMPARE(m_mainWindow->activeViewContainer()->url(), childDirUrl);
      QCOMPARE(m_mainWindow->m_activeViewContainer->view()->selectedItems().count(), 0); // There was no action in this view yet that would warrant a selection.
@@ -208,11 +205,10 @@ index f5ece564d3..2d90ae52f9 100644
  
      // Go back to the parent folder.
      m_mainWindow->actionCollection()->action(KStandardAction::name(KStandardAction::Back))->trigger();
-diff --git a/src/tests/kitemlistcontrollertest.cpp b/src/tests/kitemlistcontrollertest.cpp
-index 40b2cecaad..cb921781df 100644
---- a/src/tests/kitemlistcontrollertest.cpp
-+++ b/src/tests/kitemlistcontrollertest.cpp
-@@ -628,7 +628,6 @@ void KItemListControllerTest::testMouseClickActivation()
+diff -up dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp.3~ dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp
+--- dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp.3~	2024-12-03 04:15:16.000000000 +0100
++++ dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp	2024-12-12 16:54:54.815084190 +0100
+@@ -664,7 +664,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 1);
      spyItemActivated.clear();
@@ -220,15 +216,15 @@ index 40b2cecaad..cb921781df 100644
  
      // Set the global setting to "double click activation".
      m_testStyle->setActivateItemOnSingleClick(false);
-@@ -636,7 +635,6 @@ void KItemListControllerTest::testMouseClickActivation()
+@@ -672,7 +671,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 0);
      spyItemActivated.clear();
 -    QVERIFY(m_view->controller()->selectionManager()->hasSelection());
  
-     // Enforce single click activation in the controller.
-     m_controller->setSingleClickActivationEnforced(true);
-@@ -644,8 +642,6 @@ void KItemListControllerTest::testMouseClickActivation()
+     // emulation of double click according to https://doc.qt.io/qt-6/qgraphicsscene.html#mouseDoubleClickEvent
+     m_view->event(&mousePressEvent);
+@@ -703,8 +701,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 1);
      spyItemActivated.clear();
@@ -237,7 +233,7 @@ index 40b2cecaad..cb921781df 100644
  
      // Do not enforce single click activation in the controller.
      m_controller->setSingleClickActivationEnforced(false);
-@@ -653,7 +649,6 @@ void KItemListControllerTest::testMouseClickActivation()
+@@ -712,7 +708,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 0);
      spyItemActivated.clear();
@@ -245,7 +241,7 @@ index 40b2cecaad..cb921781df 100644
  
      // Set the global setting back to "single click activation".
      m_testStyle->setActivateItemOnSingleClick(true);
-@@ -661,7 +656,6 @@ void KItemListControllerTest::testMouseClickActivation()
+@@ -720,7 +715,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 1);
      spyItemActivated.clear();
@@ -253,7 +249,7 @@ index 40b2cecaad..cb921781df 100644
  
      // Enforce single click activation in the controller.
      m_controller->setSingleClickActivationEnforced(true);
-@@ -669,7 +663,6 @@ void KItemListControllerTest::testMouseClickActivation()
+@@ -728,7 +722,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 1);
      spyItemActivated.clear();
@@ -261,6 +257,3 @@ index 40b2cecaad..cb921781df 100644
  
      // Restore previous settings.
      m_controller->setSingleClickActivationEnforced(true);
--- 
-GitLab
-
