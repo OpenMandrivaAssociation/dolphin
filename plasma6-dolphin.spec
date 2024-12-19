@@ -6,7 +6,7 @@
 Summary:	File manager for KDE focusing on usability
 Name:		plasma6-dolphin
 Version:	24.12.0
-Release:	%{?git:0.%{git}.}1
+Release:	%{?git:0.%{git}.}2
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 %if 0%{?git:1}
@@ -14,11 +14,6 @@ Source0:	https://invent.kde.org/system/dolphin/-/archive/%{gitbranch}/dolphin-%{
 %else
 Source0:	http://download.kde.org/%{stable}/release-service/%{version}/src/dolphin-%{version}.tar.xz
 %endif
-Patch0:		https://gitweb.frugalware.org/frugalware-current/raw/%{gitbranchd}/source/kde5/dolphin/allow-root.patch
-Patch1:		dolphin-21.03.80-show-copyto-moveto-by-default.patch
-# Revert https://invent.kde.org/system/dolphin/-/commit/122fee5625f0285ec4ebda79162c72390989eb2a.patch
-# It makes the UI less consistent for the sake of making it idiot friendly. This isn't GNOME.
-Patch2:		revert-122fee5625f0285ec4ebda79162c72390989eb2a.patch
 URL:		https://www.kde.org/
 BuildRequires:	cmake(ECM)
 BuildRequires:	cmake(Qt6)
@@ -60,6 +55,19 @@ BuildRequires:	ruby
 BuildRequires:	ninja
 BuildRequires:	zsh
 BuildRequires:	plasma6-xdg-desktop-portal-kde
+
+%patchlist
+https://gitweb.frugalware.org/frugalware-current/raw/%{gitbranchd}/source/kde5/dolphin/allow-root.patch
+dolphin-21.03.80-show-copyto-moveto-by-default.patch
+# Revert https://invent.kde.org/system/dolphin/-/commit/122fee5625f0285ec4ebda79162c72390989eb2a.patch
+# It makes the UI less consistent for the sake of making it idiot friendly. This isn't GNOME.
+revert-122fee5625f0285ec4ebda79162c72390989eb2a.patch
+# Fixes a crash with opening mtp:// and smb:// etc. folders:
+https://invent.kde.org/system/dolphin/-/commit/edfd598446cfd6d4348a3bfecd72b5665eef5bfc.patch
+# Fixes view display style settings not saving
+https://invent.kde.org/system/dolphin/-/commit/86609f89358243c08ebe4de8498a0fa6dff8370e.patch
+# Fixes thumbnails not updating on filename change
+https://invent.kde.org/system/dolphin/-/commit/0fe6544079a23769e8f19ee2f09b5c149f404d5a.patch
 
 %description
 Dolphin is a file manager for KDE focusing on usability.
