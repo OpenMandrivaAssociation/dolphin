@@ -47,6 +47,7 @@ BuildRequires:	cmake(KF6BalooWidgets)
 BuildRequires:	cmake(KF6FileMetaData)
 BuildRequires:	cmake(packagekitqt6)
 BuildRequires:	cmake(KF6UserFeedback)
+BuildRequires:	pkgconfig(xkbcommon)
 BuildRequires:	%mklibname -d KF6UserFeedbackWidgets
 BuildRequires:	libxml2-utils
 BuildRequires:	docbook-dtds
