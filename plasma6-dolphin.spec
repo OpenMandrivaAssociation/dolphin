@@ -201,7 +201,7 @@ cat >%{buildroot}%{_datadir}/polkit-1/actions/org.kde.dolphin.policy <<'EOF'
      <allow_inactive>no</allow_inactive>
      <allow_active>auth_admin</allow_active>
     </defaults>
-    <annotate key="org.freedesktop.policykit.exec.path">/usr/bin/dolphin</annotate>
+    <annotate key="org.freedesktop.policykit.exec.path">%{_bindir}/dolphin</annotate>
     <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
  </action>
 </policyconfig>
