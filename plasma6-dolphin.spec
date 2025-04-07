@@ -6,7 +6,7 @@
 Summary:	File manager for KDE focusing on usability
 Name:		plasma6-dolphin
 Version:	24.12.3
-Release:	%{?git:0.%{git}.}3
+Release:	%{?git:0.%{git}.}4
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 %if 0%{?git:1}
@@ -15,6 +15,8 @@ Source0:	https://invent.kde.org/system/dolphin/-/archive/%{gitbranch}/dolphin-%{
 Source0:	http://download.kde.org/%{stable}/release-service/%(echo %{version} |cut -d. -f1-3)/src/dolphin-%{version}.tar.xz
 %endif
 URL:		https://www.kde.org/
+BuildSystem:	cmake
+BuildOption:	-DKDE_INSTALL_USE_QT_SYS_PATHS:BOOL=ON
 BuildRequires:	cmake(ECM)
 BuildRequires:	cmake(Qt6)
 BuildRequires:	cmake(Qt6Core)
@@ -101,6 +103,7 @@ of file management.
 %{_datadir}/icons/hicolor/scalable/apps/org.kde.dolphin.svg
 %dir %{_qtdir}/plugins/kf6/kfileitemaction
 %{_qtdir}/plugins/kf6/kfileitemaction/movetonewfolderitemaction.so
+%{_datadir}/polkit-1/actions/org.kde.dolphin.policy
 
 #--------------------------------------------------------------------
 
@@ -171,17 +174,35 @@ based on %{name}.
 
 #--------------------------------------------------------------------
 
-%prep
-%autosetup -p1 -n dolphin-%{?git:%{gitbranchd}}%{!?git:%{version}}
-%cmake \
-	-DKDE_INSTALL_USE_QT_SYS_PATHS:BOOL=ON \
-	-G Ninja
-
-%build
-%ninja_build -C build
-
-%install
-%ninja_install -C build
-%find_lang %{name} --all-name --with-html
+%install -a
 grep %_docdir %{name}.lang >handbook.list
 grep -v %_docdir %{name}.lang >%{name}.translations
+
+mkdir -p %{buildroot}%{_datadir}/polkit-1/actions
+cat >%{buildroot}%{_datadir}/polkit-1/actions/org.kde.dolphin.policy <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: no
+     SPDX-License-Identifier: CC0-1.0
+-->
+<!DOCTYPE policyconfig PUBLIC
+"-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+"http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+
+ <vendor>Dolphin</vendor>
+ <vendor_url>https://apps.kde.org/dolphin</vendor_url>
+
+ <action id="org.kde.dolphin.pkexec.run">
+    <description>Dolphin file manager</description>
+    <message>Authentication is required to run the Dolphin file manager in admin mode</message>
+    <icon_name>org.kde.dolphin</icon_name>
+    <defaults>
+     <allow_any>no</allow_any>
+     <allow_inactive>no</allow_inactive>
+     <allow_active>auth_admin</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/bin/dolphin</annotate>
+    <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
+ </action>
+</policyconfig>
+EOF
