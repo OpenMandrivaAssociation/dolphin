@@ -5,8 +5,8 @@
 
 Summary:	File manager for KDE focusing on usability
 Name:		plasma6-dolphin
-Version:	24.12.3
-Release:	%{?git:0.%{git}.}4
+Version:	25.04.0
+Release:	%{?git:0.%{git}.}1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
 %if 0%{?git:1}
@@ -97,6 +97,7 @@ of file management.
 %_datadir/dbus-1/services/org.kde.dolphin.FileManager1.service
 %_datadir/kglobalaccel/org.kde.dolphin.desktop
 %_datadir/kconf_update/*
+%{_libdir}/kconf_update_bin/dolphin_25.04_update_statusandlocationbarssettings
 %{_datadir}/dolphin
 %{_prefix}/lib/systemd/user/plasma-dolphin.service
 %{_datadir}/zsh/site-functions/_dolphin
@@ -131,7 +132,7 @@ Dolphin Library.
 
 %files -n %{libdolphinprivate}
 %_libdir/libdolphinprivate.so.%{dolphinprivate_major}*
-%_libdir/libdolphinprivate.so.24*
+%_libdir/libdolphinprivate.so.25*
 
 #--------------------------------------------------------------------
 
@@ -148,7 +149,7 @@ Dolphin Library.
 
 %files -n %{libdolphinvcs}
 %_libdir/libdolphinvcs.so.%{dolphinvcs_major}*
-%_libdir/libdolphinvcs.so.24*
+%_libdir/libdolphinvcs.so.25*
 
 #--------------------------------------------------------------------
 
