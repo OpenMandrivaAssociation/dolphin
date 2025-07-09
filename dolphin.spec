@@ -4,7 +4,7 @@
 %define gitbranchd %(echo %{gitbranch} |sed -e "s,/,-,g")
 
 Summary:	File manager for KDE focusing on usability
-Name:		plasma6-dolphin
+Name:		dolphin
 Version:	25.04.0
 Release:	%{?git:0.%{git}.}2
 License:	GPLv2+
