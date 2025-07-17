@@ -162,6 +162,7 @@ Requires:	%{libdolphinprivate} = %{EVRD}
 Requires:	%{libdolphinvcs} = %{EVRD}
 Provides:	%{name}-devel = %{EVRD}
 Obsoletes:	%{mklibname dolphin -d} < 15.08.2-2
+Obsoletes:	plasma6-dolphin-devel < %{EVRD}
 
 %description devel
 This package contains header files needed if you wish to build applications
