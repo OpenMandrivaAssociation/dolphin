@@ -1,53 +1,7 @@
-Revert:
-From 122fee5625f0285ec4ebda79162c72390989eb2a Mon Sep 17 00:00:00 2001
-From: Felix Ernst <felixernst@kde.org>
-Date: Sat, 18 May 2024 22:18:14 +0000
-Subject: [PATCH] Avoid implicitly selecting items
-
-Items should only be selected if the user wants to act on them.
-However, previous to this commit we sometimes selected items even
-when there is no reason to assume that the user would like to act
-on them. Such selections are dangerous because they make it more
-likely that the user manipulates items by accident which they
-never even explicitly selected.
-
-Example: The "Up" action is used to navigate to the parent folder.
-This will implicitly select the folder one emerged from after
-opening the parent folder, so just one accidental press of the
-Delete key will lead to data loss if the press goes unnoticed. This
-scenario would have been avoided if no folder had been selected
-automatically.
-
-The above example becomes even more dangerous if the user is acting
-with elevated privileges.
-
-The following implicit selections of items are being removed:
-- Selecting items that are being activated
-- Selecting folders one emerges from
-
-Even though these items will no longer be selected after these
-actions, they will still be marked as current.
-
-The only downside I see is that our indication of which item is "current" is a lot weaker than the selection highlight, so it might be more difficult to spot which folder one has emerged from. However, this could be counter-acted with some other temporary indication if this really turns out to be a problem.
-
-The only downside I see is that our indication of which item is
-"current" is a lot weaker than the selection highlight, so it might be
-more difficult to spot which folder one has emerged from. However, this
-could be counter-acted with some other temporary indication if this
-really turns out to be a problem.
-
-BUG: 424723
----
- src/dolphinviewcontainer.cpp           |  3 +-
- src/kitemviews/kitemlistcontroller.cpp | 21 +++++++++---
- src/tests/dolphinmainwindowtest.cpp    | 47 +++++++++++++++++++++++---
- src/tests/kitemlistcontrollertest.cpp  |  7 ++++
- 4 files changed, 69 insertions(+), 9 deletions(-)
-
-diff -up dolphin-24.12.0/src/dolphinviewcontainer.cpp.3~ dolphin-24.12.0/src/dolphinviewcontainer.cpp
---- dolphin-24.12.0/src/dolphinviewcontainer.cpp.3~	2024-12-03 04:15:16.000000000 +0100
-+++ dolphin-24.12.0/src/dolphinviewcontainer.cpp	2024-12-12 16:32:28.618822812 +0100
-@@ -868,8 +868,7 @@ void DolphinViewContainer::slotUrlNaviga
+diff -up dolphin-25.08.0/src/dolphinviewcontainer.cpp.3~ dolphin-25.08.0/src/dolphinviewcontainer.cpp
+--- dolphin-25.08.0/src/dolphinviewcontainer.cpp.3~	2025-08-07 05:27:17.000000000 +0200
++++ dolphin-25.08.0/src/dolphinviewcontainer.cpp	2025-08-27 22:44:56.460619771 +0200
+@@ -908,8 +908,7 @@ void DolphinViewContainer::slotUrlNaviga
  
  void DolphinViewContainer::slotUrlSelectionRequested(const QUrl &url)
  {
@@ -57,10 +11,10 @@ diff -up dolphin-24.12.0/src/dolphinviewcontainer.cpp.3~ dolphin-24.12.0/src/dol
      m_view->markUrlAsCurrent(url); // makes the item scroll into view
  }
  
-diff -up dolphin-24.12.0/src/kitemviews/kitemlistcontroller.cpp.3~ dolphin-24.12.0/src/kitemviews/kitemlistcontroller.cpp
---- dolphin-24.12.0/src/kitemviews/kitemlistcontroller.cpp.3~	2024-12-03 04:15:16.000000000 +0100
-+++ dolphin-24.12.0/src/kitemviews/kitemlistcontroller.cpp	2024-12-12 16:32:28.618966964 +0100
-@@ -738,9 +738,6 @@ bool KItemListController::mouseDoubleCli
+diff -up dolphin-25.08.0/src/kitemviews/kitemlistcontroller.cpp.3~ dolphin-25.08.0/src/kitemviews/kitemlistcontroller.cpp
+--- dolphin-25.08.0/src/kitemviews/kitemlistcontroller.cpp.3~	2025-08-07 05:27:17.000000000 +0200
++++ dolphin-25.08.0/src/kitemviews/kitemlistcontroller.cpp	2025-08-28 12:48:19.339593980 +0200
+@@ -730,9 +730,6 @@ bool KItemListController::mouseDoubleCli
  
      const bool emitItemActivated = index.has_value() && index.value() < m_model->count() && !m_view->isAboveExpansionToggle(index.value(), pos);
      if (emitItemActivated) {
@@ -70,13 +24,13 @@ diff -up dolphin-24.12.0/src/kitemviews/kitemlistcontroller.cpp.3~ dolphin-24.12
          Q_EMIT itemActivated(index.value());
      }
      return false;
-@@ -1679,14 +1676,10 @@ bool KItemListController::onPress(const
+@@ -1672,14 +1669,10 @@ bool KItemListController::onPress(const
                  // or we just keep going for double-click activation
-                 if (m_view->style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick) || m_singleClickActivationEnforced) {
+                 if (singleClickActivation || m_singleClickActivationEnforced) {
                      if (!pressedItemAlreadySelected) {
 -                        // An unselected item was clicked directly while deselecting multiple other items so we mark it "current".
 +                        // An unselected item was clicked directly while deselecting multiple other items so we select it.
-+                        m_selectionManager->setSelected(m_pressedIndex.value(), 1, KItemListSelectionManager::Toggle);
++			m_selectionManager->setSelected(m_pressedIndex.value(), 1, KItemListSelectionManager::Toggle);
                          m_selectionManager->setCurrentItem(m_pressedIndex.value());
                          m_selectionManager->beginAnchoredSelection(m_pressedIndex.value());
 -                        if (!leftClick) {
@@ -85,36 +39,34 @@ diff -up dolphin-24.12.0/src/kitemviews/kitemlistcontroller.cpp.3~ dolphin-24.12
 -                            m_selectionManager->setSelected(m_pressedIndex.value(), 1, KItemListSelectionManager::Toggle);
 -                        }
                      }
-                     return true; // event handled, don't create rubber band
-                 }
-@@ -1753,10 +1746,7 @@ bool KItemListController::onPress(const
+                     if (leftClick) {
+                         row->setPressed(true);
+@@ -1754,9 +1747,7 @@ bool KItemListController::onPress(const
              break;
  
          case SingleSelection:
--            if (!leftClick || shiftOrControlPressed
--                || (!m_view->style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick) && !m_singleClickActivationEnforced)) {
+-            if (!leftClick || shiftOrControlPressed || (!singleClickActivation && !m_singleClickActivationEnforced)) {
 -                m_selectionManager->setSelected(m_pressedIndex.value());
 -            }
 +            m_selectionManager->setSelected(m_pressedIndex.value());
              break;
  
          case MultiSelection:
-@@ -1777,10 +1767,7 @@ bool KItemListController::onPress(const
+@@ -1777,9 +1768,7 @@ bool KItemListController::onPress(const
                  }
              } else if (!shiftPressed || !m_selectionManager->isAnchoredSelectionActive()) {
                  // Select the pressed item and start a new anchored selection
--                if (!leftClick || shiftOrControlPressed
--                    || (!m_view->style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick) && !m_singleClickActivationEnforced)) {
+-                if (!leftClick || shiftOrControlPressed || (!singleClickActivation && !m_singleClickActivationEnforced)) {
 -                    m_selectionManager->setSelected(m_pressedIndex.value(), 1, KItemListSelectionManager::Select);
 -                }
 +                m_selectionManager->setSelected(m_pressedIndex.value(), 1, KItemListSelectionManager::Select);
                  m_selectionManager->beginAnchoredSelection(m_pressedIndex.value());
              }
              break;
-diff -up dolphin-24.12.0/src/tests/dolphinmainwindowtest.cpp.3~ dolphin-24.12.0/src/tests/dolphinmainwindowtest.cpp
---- dolphin-24.12.0/src/tests/dolphinmainwindowtest.cpp.3~	2024-12-03 04:15:16.000000000 +0100
-+++ dolphin-24.12.0/src/tests/dolphinmainwindowtest.cpp	2024-12-12 16:32:28.619108631 +0100
-@@ -539,7 +536,7 @@ void DolphinMainWindowTest::testGoAction
+diff -up dolphin-25.08.0/src/tests/dolphinmainwindowtest.cpp.3~ dolphin-25.08.0/src/tests/dolphinmainwindowtest.cpp
+--- dolphin-25.08.0/src/tests/dolphinmainwindowtest.cpp.3~	2025-08-07 05:27:17.000000000 +0200
++++ dolphin-25.08.0/src/tests/dolphinmainwindowtest.cpp	2025-08-27 22:44:56.461155704 +0200
+@@ -636,7 +636,7 @@ void DolphinMainWindowTest::testGoAction
      testDir->createDir("b/b-1");
      testDir->createFile("b/b-2");
      testDir->createDir("c");
@@ -123,7 +75,7 @@ diff -up dolphin-24.12.0/src/tests/dolphinmainwindowtest.cpp.3~ dolphin-24.12.0/
      m_mainWindow->openDirectories({childDirUrl}, false); // Open "b" dir
      m_mainWindow->show();
      QVERIFY(QTest::qWaitForWindowExposed(m_mainWindow.data()));
-@@ -560,40 +557,24 @@ void DolphinMainWindowTest::testGoAction
+@@ -657,40 +657,24 @@ void DolphinMainWindowTest::testGoAction
      const QUrl parentDirUrl = m_mainWindow->activeViewContainer()->url();
      QVERIFY(parentDirUrl != childDirUrl);
  
@@ -167,7 +119,7 @@ diff -up dolphin-24.12.0/src/tests/dolphinmainwindowtest.cpp.3~ dolphin-24.12.0/
  
      // Open a new tab for the "b" child dir and verify that this doesn't interfere with anything.
      QTest::keyClick(m_mainWindow->activeViewContainer()->view()->m_container, Qt::Key::Key_Enter, Qt::ControlModifier); // Open new inactive tab
-@@ -607,26 +588,6 @@ void DolphinMainWindowTest::testGoAction
+@@ -704,26 +688,6 @@ void DolphinMainWindowTest::testGoAction
      QVERIFY(spyDirectoryLoadingCompleted.wait());
      QCOMPARE(m_mainWindow->activeViewContainer()->url(), childDirUrl);
      QCOMPARE(m_mainWindow->m_activeViewContainer->view()->selectedItems().count(), 0); // There was no action in this view yet that would warrant a selection.
@@ -194,10 +146,10 @@ diff -up dolphin-24.12.0/src/tests/dolphinmainwindowtest.cpp.3~ dolphin-24.12.0/
  
      // Go back to the parent folder.
      m_mainWindow->actionCollection()->action(KStandardAction::name(KStandardAction::Back))->trigger();
-diff -up dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp.3~ dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp
---- dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp.3~	2024-12-03 04:15:16.000000000 +0100
-+++ dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp	2024-12-12 16:54:54.815084190 +0100
-@@ -664,7 +664,6 @@ void KItemListControllerTest::testMouseC
+diff -up dolphin-25.08.0/src/tests/kitemlistcontrollertest.cpp.3~ dolphin-25.08.0/src/tests/kitemlistcontrollertest.cpp
+--- dolphin-25.08.0/src/tests/kitemlistcontrollertest.cpp.3~	2025-08-07 05:27:17.000000000 +0200
++++ dolphin-25.08.0/src/tests/kitemlistcontrollertest.cpp	2025-08-27 22:44:56.461360861 +0200
+@@ -1088,7 +1088,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 1);
      spyItemActivated.clear();
@@ -205,7 +157,7 @@ diff -up dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp.3~ dolphin-24.12.
  
      // Set the global setting to "double click activation".
      m_testStyle->setActivateItemOnSingleClick(false);
-@@ -672,7 +671,6 @@ void KItemListControllerTest::testMouseC
+@@ -1096,7 +1095,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 0);
      spyItemActivated.clear();
@@ -213,7 +165,7 @@ diff -up dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp.3~ dolphin-24.12.
  
      // emulation of double click according to https://doc.qt.io/qt-6/qgraphicsscene.html#mouseDoubleClickEvent
      m_view->event(&mousePressEvent);
-@@ -703,8 +701,6 @@ void KItemListControllerTest::testMouseC
+@@ -1127,8 +1125,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 1);
      spyItemActivated.clear();
@@ -222,7 +174,7 @@ diff -up dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp.3~ dolphin-24.12.
  
      // Do not enforce single click activation in the controller.
      m_controller->setSingleClickActivationEnforced(false);
-@@ -712,7 +708,6 @@ void KItemListControllerTest::testMouseC
+@@ -1136,7 +1132,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 0);
      spyItemActivated.clear();
@@ -230,7 +182,7 @@ diff -up dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp.3~ dolphin-24.12.
  
      // Set the global setting back to "single click activation".
      m_testStyle->setActivateItemOnSingleClick(true);
-@@ -720,7 +715,6 @@ void KItemListControllerTest::testMouseC
+@@ -1144,7 +1139,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 1);
      spyItemActivated.clear();
@@ -238,7 +190,7 @@ diff -up dolphin-24.12.0/src/tests/kitemlistcontrollertest.cpp.3~ dolphin-24.12.
  
      // Enforce single click activation in the controller.
      m_controller->setSingleClickActivationEnforced(true);
-@@ -728,7 +722,6 @@ void KItemListControllerTest::testMouseC
+@@ -1152,7 +1146,6 @@ void KItemListControllerTest::testMouseC
      m_view->event(&mouseReleaseEvent);
      QCOMPARE(spyItemActivated.count(), 1);
      spyItemActivated.clear();

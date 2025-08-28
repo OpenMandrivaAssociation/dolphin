@@ -5,7 +5,7 @@
 
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	25.04.3
+Version:	25.08.0
 Release:	%{?git:0.%{git}.}1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
@@ -105,6 +105,7 @@ of file management.
 %{_datadir}/icons/hicolor/scalable/apps/org.kde.dolphin.svg
 %dir %{_qtdir}/plugins/kf6/kfileitemaction
 %{_qtdir}/plugins/kf6/kfileitemaction/movetonewfolderitemaction.so
+%{_qtdir}/plugins/kf6/kfileitemaction/setfoldericonitemaction.so
 %{_datadir}/polkit-1/actions/org.kde.dolphin.policy
 
 #--------------------------------------------------------------------
