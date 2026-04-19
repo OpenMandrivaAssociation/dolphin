@@ -5,7 +5,7 @@
 
 Summary:	File manager for KDE focusing on usability
 Name:		dolphin
-Version:	25.12.3
+Version:	26.04.0
 Release:	%{?git:0.%{git}.}1
 License:	GPLv2+
 Group:		Graphical desktop/KDE
@@ -65,9 +65,6 @@ BuildRequires:	plasma6-xdg-desktop-portal-kde
 %patchlist
 https://gitweb.frugalware.org/frugalware-current/raw/%{gitbranchd}/source/kde5/dolphin/allow-root.patch
 dolphin-21.03.80-show-copyto-moveto-by-default.patch
-# Revert https://invent.kde.org/system/dolphin/-/commit/122fee5625f0285ec4ebda79162c72390989eb2a.patch
-# It makes the UI less consistent for the sake of making it idiot friendly. This isn't GNOME.
-revert-122fee5625f0285ec4ebda79162c72390989eb2a.patch
 
 %description
 Dolphin is a file manager for KDE focusing on usability.
@@ -101,6 +98,7 @@ of file management.
 %_datadir/kglobalaccel/org.kde.dolphin.desktop
 %_datadir/kconf_update/*
 %{_libdir}/kconf_update_bin/dolphin_25.04_update_statusandlocationbarssettings
+%{_libdir}/kconf_update_bin/dolphin_update_splitviewsettings
 %{_datadir}/dolphin
 %{_prefix}/lib/systemd/user/plasma-dolphin.service
 %{_datadir}/zsh/site-functions/_dolphin
@@ -137,7 +135,7 @@ Dolphin Library.
 
 %files -n %{libdolphinprivate}
 %_libdir/libdolphinprivate.so.%{dolphinprivate_major}*
-%_libdir/libdolphinprivate.so.25*
+%_libdir/libdolphinprivate.so.%(echo %{version}|cut -d. -f1)*
 
 #--------------------------------------------------------------------
 
@@ -154,7 +152,7 @@ Dolphin Library.
 
 %files -n %{libdolphinvcs}
 %_libdir/libdolphinvcs.so.%{dolphinvcs_major}*
-%_libdir/libdolphinvcs.so.25*
+%_libdir/libdolphinvcs.so.%(echo %{version}|cut -d. -f1)*
 
 #--------------------------------------------------------------------
 
