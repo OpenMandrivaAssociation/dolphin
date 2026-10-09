@@ -59,7 +59,6 @@ BuildRequires:	docbook-dtds
 BuildRequires:	docbook-style-xsl
 BuildRequires:	ruby
 BuildRequires:	ninja
-BuildRequires:	zsh
 BuildRequires:	plasma6-xdg-desktop-portal-kde
 %rename plasma6-dolphin
 
